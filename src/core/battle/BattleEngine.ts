@@ -3,7 +3,7 @@ import { BattleState } from '@core/types/Battle';
 import { EffectTrigger } from '@core/types/Item';
 import { GAME_CONSTANTS } from '@utils/constants';
 import { DamageCalculator } from './DamageCalculator';
-import { ItemEffects } from './ItemEffects';
+import { ItemEffects, EffectApplicationResult } from './ItemEffects';
 import { BattleLogger } from './BattleLogger';
 
 export class BattleEngine {
@@ -160,17 +160,7 @@ export class BattleEngine {
     // Update stats
     attacker.stats.attackCount++;
 
-    // Log attack event
-    const attackEvent = BattleLogger.createAttackEvent(
-      battle.turn,
-      attackerSide,
-      damageResult,
-      battle.player.stats.currentHP,
-      battle.opponent.stats.currentHP
-    );
-    battle.events.push(attackEvent);
-
-    // Apply OnHit effects
+    // Apply OnHit effects (before attack event to get HP values)
     const hitEffects = ItemEffects.applyEffects(
       EffectTrigger.OnHit,
       attacker,
@@ -178,7 +168,6 @@ export class BattleEngine {
       battle.turn,
       damageResult.finalDamage
     );
-    battle.events.push(...hitEffects.events);
 
     // Apply vampire/lifesteal effects
     const attackEffects = ItemEffects.applyEffects(
@@ -188,17 +177,16 @@ export class BattleEngine {
       battle.turn,
       damageResult.finalDamage
     );
-    battle.events.push(...attackEffects.events);
 
     // Apply OnBlock effects for defender
+    let blockEffects: EffectApplicationResult = { events: [], preventLifeLoss: false };
     if (damageResult.blockPercent > 0) {
-      const blockEffects = ItemEffects.applyEffects(
+      blockEffects = ItemEffects.applyEffects(
         EffectTrigger.OnBlock,
         defender,
         attacker,
         battle.turn
       );
-      battle.events.push(...blockEffects.events);
     }
 
     // Apply OnDefend effects
@@ -208,7 +196,37 @@ export class BattleEngine {
       attacker,
       battle.turn
     );
-    battle.events.push(...defendEffects.events);
+
+    // Log attack event with healing details included
+    const attackEvent = BattleLogger.createAttackEvent(
+      battle.turn,
+      attackerSide,
+      damageResult,
+      battle.player.stats.currentHP,
+      battle.opponent.stats.currentHP
+    );
+
+    // Consolidate all healing events into the attack event
+    const allEffects = [
+      ...hitEffects.events,
+      ...attackEffects.events,
+      ...blockEffects.events,
+      ...defendEffects.events
+    ];
+
+    // Extract healing details from effect events and add to attack event
+    const healingDetails = allEffects
+      .filter(e => e.type === 'heal')
+      .flatMap(e => e.details);
+
+    if (healingDetails.length > 0) {
+      attackEvent.details.push(...healingDetails);
+    }
+
+    // Add only non-healing effect events as separate events
+    const nonHealingEffects = allEffects.filter(e => e.type !== 'heal');
+    battle.events.push(attackEvent);
+    battle.events.push(...nonHealingEffects);
   }
 
   /**

@@ -393,7 +393,6 @@ function TurnDisplay({
 }) {
   // Find ALL attack events (both player and opponent)
   const attackEvents = turnEvents.filter((e) => e.type === 'attack');
-  const healEvents = turnEvents.filter((e) => e.type === 'heal');
   const effectEvents = turnEvents.filter(
     (e) => e.type === 'effect' || e.type === 'speedIncrease' || e.type === 'damageMultiplier'
   );
@@ -436,46 +435,6 @@ function TurnDisplay({
           opponentItems={opponentItems}
         />
       ))}
-
-      {/* Healing Section */}
-      {healEvents.length > 0 && (
-        <div className="border border-green-700 rounded-lg p-3 bg-green-900/10">
-          <div className="text-green-400 font-semibold text-sm mb-1">💚 Healing</div>
-          <div className="ml-2 space-y-1">
-            {healEvents.map((event, idx) => {
-              const healer = event.attacker === 'player' ? 'You' : 'Opponent';
-              return (
-                <div key={idx} className="text-xs">
-                  <div className="text-gray-300 mb-0.5">
-                    <span className="font-semibold text-green-300">{healer}</span> healed for{' '}
-                    <span className="font-bold text-green-400">+{event.details.reduce((sum, d) => sum + (d.healAmount || 0), 0)} HP</span>
-                  </div>
-                  <div className="ml-4 space-y-0.5">
-                    {event.details.map((detail, detailIdx) => {
-                      const item = findItemByEmoji(detail.itemEmoji || '', playerItems, opponentItems);
-                      return (
-                        <div key={detailIdx} className="text-gray-400 flex items-center gap-1">
-                          {item ? (
-                            <ItemHoverWrapper item={item}>
-                              <span className="cursor-help">{detail.itemEmoji}</span>
-                            </ItemHoverWrapper>
-                          ) : (
-                            <span>{detail.itemEmoji}</span>
-                          )}
-                          <span className="text-green-300 font-semibold">+{detail.healAmount}</span>
-                          {detail.effectDescription && (
-                            <span className="text-gray-500 text-[10px]">({detail.effectDescription})</span>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
 
       {/* Effects Section */}
       {effectEvents.length > 0 && (
@@ -523,6 +482,10 @@ function AttackDisplay({
   const baseBlock = blockDetails.find((d) => !d.itemName)?.blockAmount || 0;
   const itemBlockDetails = blockDetails.filter((d) => d.itemName);
 
+  // Calculate healing breakdown
+  const healDetails = attackEvent.details.filter((d) => d.healAmount !== undefined && d.healAmount > 0);
+  const totalHealing = healDetails.reduce((sum, d) => sum + (d.healAmount || 0), 0);
+
   // Get final damage
   const finalDamageDetail = attackEvent.details.find((d) => d.finalDamage !== undefined);
   const finalDamage = finalDamageDetail?.finalDamage || 0;
@@ -545,7 +508,7 @@ function AttackDisplay({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className={`grid ${totalHealing > 0 ? 'grid-cols-3' : 'grid-cols-2'} gap-3`}>
         {/* Damage Section */}
         <div className="bg-red-900/10 border border-red-700/30 rounded p-2">
           <div className="text-red-400 font-semibold text-sm mb-1">⚔️ Attack: {totalRawDamage}</div>
@@ -602,6 +565,33 @@ function AttackDisplay({
             {totalBlock === 0 && <div className="text-gray-500 text-xs">No defense</div>}
           </div>
         </div>
+
+        {/* Healing Section - Only show if there's healing */}
+        {totalHealing > 0 && (
+          <div className="bg-green-900/10 border border-green-700/30 rounded p-2">
+            <div className="text-green-400 font-semibold text-sm mb-1">💚 Healing: {totalHealing}</div>
+            <div className="space-y-0.5 text-xs">
+              {healDetails.map((detail, idx) => {
+                const item = findItemByEmoji(detail.itemEmoji || '', playerItems, opponentItems);
+                return (
+                  <div key={idx} className="text-gray-300">
+                    {item ? (
+                      <ItemHoverWrapper item={item}>
+                        <span className="cursor-help">{detail.itemEmoji}</span>
+                      </ItemHoverWrapper>
+                    ) : (
+                      <span>{detail.itemEmoji}</span>
+                    )}{' '}
+                    <span className="text-green-300 font-semibold">+{detail.healAmount}</span>
+                    {detail.effectDescription && (
+                      <span className="text-gray-500 text-[10px] ml-1">({detail.effectDescription})</span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Final Damage Result */}
