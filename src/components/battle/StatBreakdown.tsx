@@ -1,21 +1,15 @@
 import { Player } from '@core/types/Player';
 import { DamageCalculator } from '@core/battle/DamageCalculator';
-import { SkillTooltip } from '@components/common/SkillTooltip';
-import { getSkillEmoji } from '@utils/skillDisplay';
 
 interface StatBreakdownProps {
   player: Player;
   currentHP: number;
-  speedMultiplier: number;
-  damageMultiplier: number;
   isOpponent?: boolean;
 }
 
 export function StatBreakdown({
   player,
   currentHP,
-  speedMultiplier,
-  damageMultiplier,
   isOpponent = false
 }: StatBreakdownProps) {
   // Calculate stat breakdown using DamageCalculator
@@ -88,41 +82,6 @@ export function StatBreakdown({
         </div>
       </div>
 
-      {/* Multipliers */}
-      {(speedMultiplier > 1 || damageMultiplier > 1) && (
-        <div className="border-t border-gray-700 pt-3 mt-3">
-          <div className="text-sm font-semibold text-purple-400 mb-2">Active Multipliers</div>
-          {speedMultiplier > 1 && (
-            <div className="text-xs text-gray-300">
-              ⚡ Speed: ×{speedMultiplier.toFixed(1)}
-            </div>
-          )}
-          {damageMultiplier > 1 && (
-            <div className="text-xs text-gray-300">
-              💥 Damage: ×{damageMultiplier.toFixed(1)}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Skills Display */}
-      {player.skills && player.skills.length > 0 && (
-        <div className="border-t border-gray-700 pt-3 mt-3">
-          <div className="text-sm font-semibold text-purple-400 mb-2">Skills</div>
-          <div className="flex flex-wrap gap-2">
-            {player.skills.map((skill, idx) => (
-              <SkillTooltip key={idx} skill={skill}>
-                <div className="relative cursor-help">
-                  <span className="text-2xl">{getSkillEmoji(skill.skillId)}</span>
-                  <span className="absolute -top-1 -right-1 bg-purple-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-bold">
-                    {skill.level}
-                  </span>
-                </div>
-              </SkillTooltip>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 }

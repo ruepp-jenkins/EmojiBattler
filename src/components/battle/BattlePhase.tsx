@@ -31,6 +31,13 @@ export function BattlePhase() {
 
   const battle = gameState?.currentBattle;
 
+  // Get item changes for this round
+  const soldItems = gameState?.soldItems || [];
+  const boughtItems = gameState?.shopTransactionLog
+    .filter(t => t.round === gameState.currentRound && t.type === 'item_bought')
+    .map(t => t.item!)
+    .filter(Boolean) || [];
+
   // Group events by turn
   const turnGroups: BattleEvent[][] = [];
   if (battle) {
@@ -148,8 +155,6 @@ export function BattlePhase() {
               <StatBreakdown
                 player={battle.player}
                 currentHP={battle.player.stats.maxHP}
-                speedMultiplier={1}
-                damageMultiplier={1}
                 isOpponent={false}
               />
 
@@ -169,6 +174,38 @@ export function BattlePhase() {
                   )}
                 </div>
               </div>
+
+              {/* Item Changes */}
+              {(boughtItems.length > 0 || soldItems.length > 0) && (
+                <div className="bg-gray-800 rounded-lg p-4 border border-yellow-600">
+                  <div className="text-sm font-semibold text-yellow-400 mb-3">
+                    📦 Recent Changes
+                  </div>
+                  <div className="space-y-2">
+                    {boughtItems.map((item) => (
+                      <ItemHoverWrapper key={item.id} item={item}>
+                        <div className="flex items-center gap-2 text-xs">
+                          <span className="text-green-400 text-lg">✓</span>
+                          <ItemMiniCard item={item} />
+                        </div>
+                      </ItemHoverWrapper>
+                    ))}
+                    {soldItems.map((item) => (
+                      <ItemHoverWrapper key={item.id} item={item}>
+                        <div className="relative flex items-center gap-2 text-xs opacity-60">
+                          <span className="text-red-400 text-lg">✗</span>
+                          <div className="relative">
+                            <ItemMiniCard item={item} />
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <div className="w-full h-0.5 bg-red-500 rotate-[-15deg]"></div>
+                            </div>
+                          </div>
+                        </div>
+                      </ItemHoverWrapper>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* VS Divider */}
@@ -189,8 +226,6 @@ export function BattlePhase() {
               <StatBreakdown
                 player={battle.opponent}
                 currentHP={battle.opponent.stats.maxHP}
-                speedMultiplier={1}
-                damageMultiplier={1}
                 isOpponent={true}
               />
 
@@ -236,8 +271,6 @@ export function BattlePhase() {
             <StatBreakdown
               player={battle.player}
               currentHP={playerHP}
-              speedMultiplier={battle.speedMultiplier}
-              damageMultiplier={battle.damageMultiplier}
               isOpponent={false}
             />
 
@@ -254,6 +287,38 @@ export function BattlePhase() {
                 ))}
               </div>
             </div>
+
+            {/* Item Changes */}
+            {(boughtItems.length > 0 || soldItems.length > 0) && (
+              <div className="bg-gray-800 rounded-lg p-3 border border-yellow-600">
+                <div className="text-xs font-semibold text-yellow-400 mb-2">
+                  📦 Recent Changes
+                </div>
+                <div className="space-y-2">
+                  {boughtItems.map((item) => (
+                    <ItemHoverWrapper key={item.id} item={item}>
+                      <div className="flex items-center gap-2 text-xs">
+                        <span className="text-green-400 text-base">✓</span>
+                        <ItemMiniCard item={item} />
+                      </div>
+                    </ItemHoverWrapper>
+                  ))}
+                  {soldItems.map((item) => (
+                    <ItemHoverWrapper key={item.id} item={item}>
+                      <div className="relative flex items-center gap-2 text-xs opacity-60">
+                        <span className="text-red-400 text-base">✗</span>
+                        <div className="relative">
+                          <ItemMiniCard item={item} />
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="w-full h-0.5 bg-red-500 rotate-[-15deg]"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </ItemHoverWrapper>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Center Column - Battle Log */}
@@ -361,8 +426,6 @@ export function BattlePhase() {
             <StatBreakdown
               player={battle.opponent}
               currentHP={opponentHP}
-              speedMultiplier={battle.speedMultiplier}
-              damageMultiplier={battle.damageMultiplier}
               isOpponent={true}
             />
 

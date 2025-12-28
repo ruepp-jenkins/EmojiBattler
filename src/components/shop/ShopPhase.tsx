@@ -5,13 +5,17 @@ import { Player } from '@core/types/Player';
 import { ShopTransaction } from '@core/types/GameState';
 import { ItemCard } from '@components/common/ItemCard';
 import { ItemHoverWrapper } from '@components/common/ItemHoverWrapper';
+import { SkillHoverWrapper } from '@components/common/SkillHoverWrapper';
 import { Button } from '@components/common/Button';
 import { formatMoney } from '@utils/formatting';
 import { GAME_CONSTANTS } from '@utils/constants';
+import { getAllSkills } from '@core/skills/SkillTree';
 
 export function ShopPhase() {
-  const { gameState, purchaseItem, sellItem, startBattle } = useGame();
+  const { gameState, purchaseItem, sellItem, startBattle, persistentData, purchaseSkill } = useGame();
   const { hideTooltip } = useItemTooltip();
+
+  const allSkills = getAllSkills();
 
   if (!gameState) return null;
 
@@ -82,6 +86,49 @@ export function ShopPhase() {
                   ❤
                 </span>
               ))}
+            </div>
+
+            {/* Skills */}
+            <div className="flex items-center gap-1 text-xl">
+              <span className="mr-1">Skills:</span>
+              {allSkills.map((skill) => {
+                const appliedSkill = persistentData.permanentSkills.find(s => s.skillId === skill.id);
+                const currentLevel = appliedSkill?.level || 0;
+                const canAfford = persistentData.totalSkillPoints >= skill.cost;
+                const isMaxed = currentLevel >= skill.maxLevel;
+                const skillIcon = getSkillIcon(skill.id);
+
+                return (
+                  <SkillHoverWrapper
+                    key={skill.id}
+                    skill={skill}
+                    currentLevel={currentLevel}
+                    canAfford={canAfford}
+                    isMaxed={isMaxed}
+                  >
+                    <div
+                      className="relative cursor-pointer"
+                      onClick={() => {
+                        if (!isMaxed && canAfford) {
+                          if (purchaseSkill(skill.id)) {
+                            // Success
+                          } else {
+                            alert('Cannot purchase skill!');
+                          }
+                        }
+                      }}
+                    >
+                      <span className="text-2xl">{skillIcon}</span>
+                      {currentLevel > 0 && (
+                        <div className="absolute -top-1 -right-1 bg-purple-600 text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center border border-purple-400">
+                          {currentLevel}
+                        </div>
+                      )}
+                    </div>
+                  </SkillHoverWrapper>
+                );
+              })}
+              <span className="text-xs text-purple-300 ml-1">({persistentData.totalSkillPoints} pts)</span>
             </div>
 
             <div className="text-2xl font-bold text-yellow-400">
@@ -271,4 +318,25 @@ function calculateTotalDefense(player: Player): number {
     total += item.baseDefense;
   }
   return total;
+}
+
+function getSkillIcon(skillId: string): string {
+  switch (skillId) {
+    case 'base_attack':
+      return '⚔️';
+    case 'base_defense':
+      return '🛡️';
+    case 'max_hp':
+      return '❤️';
+    case 'starting_money':
+      return '💰';
+    case 'money_per_round':
+      return '💵';
+    case 'attack_multiplier':
+      return '💪';
+    case 'defense_multiplier':
+      return '🏰';
+    default:
+      return '⭐';
+  }
 }
