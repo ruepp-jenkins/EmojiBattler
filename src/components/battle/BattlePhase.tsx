@@ -21,7 +21,7 @@ interface DamageAnimation {
 }
 
 export function BattlePhase() {
-  const { gameState, transitionToSummary } = useGame();
+  const { gameState, endRound } = useGame();
   const [battlePhase, setBattlePhase] = useState<BattlePhase>('preparation');
   const [currentTurn, setCurrentTurn] = useState(0);
   const [damageAnimations, setDamageAnimations] = useState<DamageAnimation[]>([]);
@@ -343,7 +343,7 @@ export function BattlePhase() {
                   <div className="text-6xl mb-4">⚔️ Draw ⚔️</div>
                 )}
 
-                <Button variant="primary" onClick={transitionToSummary} className="text-lg px-8 py-4">
+                <Button variant="primary" onClick={endRound} className="text-lg px-8 py-4">
                   Continue
                 </Button>
               </div>
