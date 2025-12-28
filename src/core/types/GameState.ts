@@ -24,6 +24,8 @@ export interface GameState {
   currentBattle?: BattleState;
   playerShopInventory: Item[]; // Player's shop (unique items, excludes owned items)
   aiShopInventory: Item[]; // AI's shop (unique items, excludes AI's owned items)
+  purchasedShopItemIds: string[]; // Track which shop items were bought (for empty slots)
+  soldItems: Item[]; // Items sold by player during current shop phase
   skillPoints: number;
   consecutiveWins: number; // Track wins for "every Nth battle" skill point rewards
   battleTimeline: BattleTimeline[];

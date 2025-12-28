@@ -12,7 +12,7 @@ export function ShopPhase() {
 
   if (!gameState) return null;
 
-  const { player, playerShopInventory, currentRound, maxRounds } = gameState;
+  const { player, playerShopInventory, purchasedShopItemIds, soldItems, currentRound, maxRounds } = gameState;
 
   const handleBuyItem = (item: Item) => {
     if (player.items.length >= GAME_CONSTANTS.MAX_ITEMS) {
@@ -35,6 +35,27 @@ export function ShopPhase() {
     }
 
     sellItem(item);
+  };
+
+  const handleBuyBackItem = (item: Item) => {
+    if (player.items.length >= GAME_CONSTANTS.MAX_ITEMS) {
+      alert('Cannot buy more items! Maximum 15 items.');
+      return;
+    }
+
+    if (player.stats.money < item.price) {
+      alert('Not enough money!');
+      return;
+    }
+
+    // Buy back the sold item
+    purchaseItem(item);
+
+    // Remove from sold items list
+    const soldIndex = gameState.soldItems.findIndex((i) => i.id === item.id);
+    if (soldIndex !== -1) {
+      gameState.soldItems.splice(soldIndex, 1);
+    }
   };
 
   return (
@@ -67,25 +88,52 @@ export function ShopPhase() {
           <div className="flex flex-col items-center">
             <h2 className="text-xl font-bold mb-4 self-start">Shop</h2>
             <div className="grid grid-cols-3 gap-4 w-full max-w-2xl">
-              {playerShopInventory.map((item) => (
-                <ItemHoverWrapper key={item.id} item={item} showPrice>
-                  <ItemCard
-                    item={item}
-                    showPrice
-                    onClick={() => handleBuyItem(item)}
-                    disabled={
-                      player.stats.money < item.price ||
-                      player.items.length >= GAME_CONSTANTS.MAX_ITEMS
-                    }
-                  />
-                </ItemHoverWrapper>
-              ))}
+              {playerShopInventory.map((item) => {
+                const isPurchased = purchasedShopItemIds.includes(item.id);
+                return isPurchased ? (
+                  <div key={item.id} className="card bg-gray-800 border-gray-700 h-32"></div>
+                ) : (
+                  <ItemHoverWrapper key={item.id} item={item} showPrice>
+                    <ItemCard
+                      item={item}
+                      showPrice
+                      onClick={() => handleBuyItem(item)}
+                      disabled={
+                        player.stats.money < item.price ||
+                        player.items.length >= GAME_CONSTANTS.MAX_ITEMS
+                      }
+                    />
+                  </ItemHoverWrapper>
+                );
+              })}
 
               {/* Fill empty slots */}
               {Array.from({ length: Math.max(0, 9 - playerShopInventory.length) }).map((_, i) => (
                 <div key={`empty-${i}`} className="card bg-gray-800 border-gray-700 h-32"></div>
               ))}
             </div>
+
+            {/* Sold Items Section */}
+            {soldItems.length > 0 && (
+              <div className="w-full max-w-2xl mt-6">
+                <h3 className="text-lg font-bold mb-3">Sold Items</h3>
+                <div className="grid grid-cols-3 gap-4">
+                  {soldItems.map((item, index) => (
+                    <ItemHoverWrapper key={`${item.id}-sold-${index}`} item={item} showPrice>
+                      <ItemCard
+                        item={item}
+                        showPrice
+                        onClick={() => handleBuyBackItem(item)}
+                        disabled={
+                          player.stats.money < item.price ||
+                          player.items.length >= GAME_CONSTANTS.MAX_ITEMS
+                        }
+                      />
+                    </ItemHoverWrapper>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Inventory & Stats */}

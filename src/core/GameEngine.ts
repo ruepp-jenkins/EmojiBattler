@@ -33,6 +33,8 @@ export class GameEngine {
       currentBattle: undefined,
       playerShopInventory: [],
       aiShopInventory: [],
+      purchasedShopItemIds: [],
+      soldItems: [],
       skillPoints: 0,
       consecutiveWins: 0,
       battleTimeline: [],
@@ -145,6 +147,10 @@ export class GameEngine {
   static startShopPhase(gameState: GameState): void {
     gameState.phase = 'shop';
 
+    // Reset shop tracking for new round
+    gameState.purchasedShopItemIds = [];
+    gameState.soldItems = [];
+
     // Award round money to player
     const basePlayerMoney = GAME_CONSTANTS.MONEY_PER_ROUND +
       SkillManager.getMoneyPerRoundBonus(gameState.player.skills) +
@@ -202,11 +208,8 @@ export class GameEngine {
       return false;
     }
 
-    // Remove from player shop inventory
-    const shopIndex = gameState.playerShopInventory.findIndex((i) => i.id === item.id);
-    if (shopIndex !== -1) {
-      gameState.playerShopInventory.splice(shopIndex, 1);
-    }
+    // Track purchased item (leave empty slot in shop)
+    gameState.purchasedShopItemIds.push(item.id);
 
     return true;
   }
@@ -219,8 +222,8 @@ export class GameEngine {
       return false;
     }
 
-    // Add back to player shop inventory
-    gameState.playerShopInventory.push(item);
+    // Add to sold items section
+    gameState.soldItems.push(item);
 
     return true;
   }
