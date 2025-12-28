@@ -11,6 +11,7 @@ export type ShopTransactionType = 'money_received' | 'item_bought' | 'item_sold'
 export interface ShopTransaction {
   round: number;
   type: ShopTransactionType;
+  source: 'player' | 'opponent'; // Who made the transaction
   amount?: number; // Money amount for money_received
   item?: Item; // Item for bought/sold
   timestamp: number;

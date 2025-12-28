@@ -6,6 +6,8 @@ import { Button } from '@components/common/Button';
 import { StatBreakdown } from './StatBreakdown';
 import { ItemMiniCard } from './ItemMiniCard';
 import { ItemHoverWrapper } from '@components/common/ItemHoverWrapper';
+import { TransactionHistoryModal } from '@components/common/TransactionHistoryModal';
+import { formatMoney } from '@utils/formatting';
 
 type BattlePhase = 'preparation' | 'fighting' | 'complete';
 
@@ -25,6 +27,7 @@ export function BattlePhase() {
   const [battlePhase, setBattlePhase] = useState<BattlePhase>('preparation');
   const [currentTurn, setCurrentTurn] = useState(0);
   const [damageAnimations, setDamageAnimations] = useState<DamageAnimation[]>([]);
+  const [showTransactionHistory, setShowTransactionHistory] = useState<'player' | 'opponent' | null>(null);
   const battleLogRef = useRef<HTMLDivElement>(null);
   const prevPlayerHP = useRef<number>(0);
   const prevOpponentHP = useRef<number>(0);
@@ -140,10 +143,20 @@ export function BattlePhase() {
     prevOpponentHP.current = opponentHP;
   }, [playerHP, opponentHP, battle, battlePhase]);
 
+
   // Preparation Phase - Show matchup before battle
   if (battlePhase === 'preparation') {
     return (
       <div className="min-h-screen bg-gray-900 text-white p-4">
+        <TransactionHistoryModal
+          isOpen={showTransactionHistory !== null}
+          onClose={() => setShowTransactionHistory(null)}
+          viewType={showTransactionHistory || 'player'}
+          transactions={gameState?.shopTransactionLog || []}
+          currentRound={gameState.currentRound}
+          maxRounds={gameState.maxRounds}
+          opponent={battle.opponent}
+        />
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-bold mb-6 text-center text-yellow-400">
             Round {battle.round} - Battle Preparation
@@ -157,6 +170,21 @@ export function BattlePhase() {
                 currentHP={battle.player.stats.maxHP}
                 isOpponent={false}
               />
+
+              {/* Player Money */}
+              <div className="bg-gray-800 rounded-lg p-2 border border-gray-700">
+                <div className="text-xs text-gray-400">Money 💰</div>
+                <div className="flex items-center justify-between gap-2">
+                  <div className="text-lg font-bold text-yellow-400">{formatMoney(battle.player.stats.money)}</div>
+                  <span
+                    className="cursor-pointer hover:text-yellow-400 transition-colors text-base"
+                    onClick={() => setShowTransactionHistory('player')}
+                    title="View transaction history"
+                  >
+                    📊
+                  </span>
+                </div>
+              </div>
 
               {/* Player Items */}
               <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
@@ -229,6 +257,21 @@ export function BattlePhase() {
                 isOpponent={true}
               />
 
+              {/* Opponent Money */}
+              <div className="bg-gray-800 rounded-lg p-2 border border-gray-700">
+                <div className="text-xs text-gray-400">Money 💰</div>
+                <div className="flex items-center justify-between gap-2">
+                  <div className="text-lg font-bold text-yellow-400">{formatMoney(battle.opponent.stats.money)}</div>
+                  <span
+                    className="cursor-pointer hover:text-yellow-400 transition-colors text-base"
+                    onClick={() => setShowTransactionHistory('opponent')}
+                    title="View opponent info"
+                  >
+                    📊
+                  </span>
+                </div>
+              </div>
+
               {/* Opponent Items */}
               <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
                 <div className="text-sm font-semibold text-red-400 mb-3">
@@ -259,6 +302,15 @@ export function BattlePhase() {
   // Fighting Phase - 3-column layout with battle log
   return (
     <div className="min-h-screen bg-gray-900 text-white p-4">
+      <TransactionHistoryModal
+        isOpen={showTransactionHistory !== null}
+        onClose={() => setShowTransactionHistory(null)}
+        viewType={showTransactionHistory || 'player'}
+        transactions={gameState?.shopTransactionLog || []}
+        currentRound={gameState.currentRound}
+        maxRounds={gameState.maxRounds}
+        opponent={battle.opponent}
+      />
       <div className="max-w-7xl mx-auto">
         <h2 className="text-3xl font-bold mb-4 text-center">
           Round {battle.round} - Battle Simulation
@@ -273,6 +325,21 @@ export function BattlePhase() {
               currentHP={playerHP}
               isOpponent={false}
             />
+
+            {/* Player Money */}
+            <div className="bg-gray-800 rounded-lg p-2 border border-gray-700">
+              <div className="text-xs text-gray-400">Money 💰</div>
+              <div className="flex items-center justify-between gap-2">
+                <div className="text-base font-bold text-yellow-400">{formatMoney(battle.player.stats.money)}</div>
+                <span
+                  className="cursor-pointer hover:text-yellow-400 transition-colors text-sm"
+                  onClick={() => setShowTransactionHistory('player')}
+                  title="View transaction history"
+                >
+                  📊
+                </span>
+              </div>
+            </div>
 
             {/* Player Items */}
             <div className="bg-gray-800 rounded-lg p-3 border border-gray-700">
@@ -428,6 +495,21 @@ export function BattlePhase() {
               currentHP={opponentHP}
               isOpponent={true}
             />
+
+            {/* Opponent Money */}
+            <div className="bg-gray-800 rounded-lg p-2 border border-gray-700">
+              <div className="text-xs text-gray-400">Money 💰</div>
+              <div className="flex items-center justify-between gap-2">
+                <div className="text-base font-bold text-yellow-400">{formatMoney(battle.opponent.stats.money)}</div>
+                <span
+                  className="cursor-pointer hover:text-yellow-400 transition-colors text-sm"
+                  onClick={() => setShowTransactionHistory('opponent')}
+                  title="View opponent info"
+                >
+                  📊
+                </span>
+              </div>
+            </div>
 
             {/* Opponent Items */}
             <div className="bg-gray-800 rounded-lg p-3 border border-gray-700">

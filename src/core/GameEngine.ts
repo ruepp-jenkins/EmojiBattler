@@ -171,6 +171,15 @@ export class GameEngine {
         if (worstItem && AIShopStrategy.shouldSellItem(worstItem, itemToBuy, aiPlayer, difficulty, round)) {
           MoneyManager.sellItem(aiPlayer, worstItem);
           this.updatePlayerMaxHP(aiPlayer);
+
+          // Log opponent item sold
+          gameState.shopTransactionLog.push({
+            round: round,
+            type: 'item_sold',
+            source: 'opponent',
+            item: { ...worstItem }, // Clone item to preserve state
+            timestamp: Date.now(),
+          });
         } else {
           // Can't or shouldn't sell anything, skip this purchase
           continue;
@@ -180,6 +189,15 @@ export class GameEngine {
       // Purchase the item
       if (MoneyManager.purchaseItem(aiPlayer, itemToBuy)) {
         this.updatePlayerMaxHP(aiPlayer);
+
+        // Log opponent item bought
+        gameState.shopTransactionLog.push({
+          round: round,
+          type: 'item_bought',
+          source: 'opponent',
+          item: { ...itemToBuy }, // Clone item to preserve state
+          timestamp: Date.now(),
+        });
 
         // Remove from AI shop inventory
         const index = shop.findIndex((i) => i.id === itemToBuy.id);
@@ -249,6 +267,7 @@ export class GameEngine {
     gameState.shopTransactionLog.push({
       round: gameState.currentRound,
       type: 'money_received',
+      source: 'player',
       amount: playerMoneyEarned,
       timestamp: Date.now(),
     });
@@ -267,6 +286,15 @@ export class GameEngine {
       const aiMoneyEarned = GAME_CONSTANTS.MONEY_PER_ROUND +
         (gameState.difficulty?.aiMoneyBonus || 0);
       gameState.opponent.stats.money += aiMoneyEarned;
+
+      // Log opponent money received
+      gameState.shopTransactionLog.push({
+        round: gameState.currentRound,
+        type: 'money_received',
+        source: 'opponent',
+        amount: aiMoneyEarned,
+        timestamp: Date.now(),
+      });
 
       // Generate fresh shop for AI (excludes AI's owned items)
       gameState.aiShopInventory = ShopGenerator.generateShop(
@@ -294,6 +322,7 @@ export class GameEngine {
     gameState.shopTransactionLog.push({
       round: gameState.currentRound,
       type: 'item_bought',
+      source: 'player',
       item: { ...item }, // Clone item to preserve state
       timestamp: Date.now(),
     });
@@ -319,6 +348,7 @@ export class GameEngine {
     gameState.shopTransactionLog.push({
       round: gameState.currentRound,
       type: 'item_sold',
+      source: 'player',
       item: { ...item }, // Clone item to preserve state
       timestamp: Date.now(),
     });
