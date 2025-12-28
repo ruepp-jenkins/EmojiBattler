@@ -202,7 +202,7 @@ export class DamageCalculator {
 
     // Calculate final damage
     const blockedDamage = Math.round(rawDamage * blockPercent);
-    const finalDamage = Math.max(1, rawDamage - blockedDamage); // Always deal at least 1 damage
+    const finalDamage = Math.max(0, rawDamage - blockedDamage);
 
     return {
       rawDamage,
@@ -251,8 +251,14 @@ export class DamageCalculator {
 
   /**
    * Apply heal to player (capped at maxHP)
+   * Cannot heal dead players (HP <= 0)
    */
   static applyHeal(player: Player, healAmount: number): number {
+    // Cannot heal dead players
+    if (player.stats.currentHP <= 0) {
+      return 0;
+    }
+
     const newHP = Math.min(player.stats.maxHP, player.stats.currentHP + healAmount);
     const actualHeal = newHP - player.stats.currentHP;
     player.stats.currentHP = newHP;
