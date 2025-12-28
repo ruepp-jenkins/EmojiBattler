@@ -1,0 +1,16 @@
+services:
+  emojybattler:
+    image: ruepp/emojybattler:latest
+    container_name: emojybattler
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    # Optional: Add health check
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
