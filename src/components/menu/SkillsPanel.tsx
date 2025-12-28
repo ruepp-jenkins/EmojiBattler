@@ -163,6 +163,29 @@ function SkillCard({
   const nextLevelValue = formatEffectValue(skill.effect.type, skill.effect.value, currentLevel + 1);
   const currentTotalValue = formatEffectValue(skill.effect.type, skill.effect.value, currentLevel);
 
+  // Format the per-level effect text
+  const getPerLevelText = (): string => {
+    const value = skill.effect.value;
+    switch (skill.effect.type) {
+      case 'baseAttack':
+        return `+${value} base attack per level`;
+      case 'baseDefense':
+        return `+${value} base defense per level`;
+      case 'maxHP':
+        return `+${value} max HP per level`;
+      case 'startingMoney':
+        return `+${value} starting money per level`;
+      case 'moneyPerRound':
+        return `+${value} money per round per level`;
+      case 'attackMultiplier':
+        return `+${(value * 100).toFixed(0)}% attack damage per level`;
+      case 'defenseMultiplier':
+        return `+${(value * 100).toFixed(0)}% defense per level`;
+      default:
+        return `+${value} per level`;
+    }
+  };
+
   return (
     <div
       className={`card p-4 ${
@@ -183,7 +206,11 @@ function SkillCard({
         </div>
       </div>
 
-      <p className="text-sm text-gray-400 mb-3">{skill.description}</p>
+      {/* Main effect text - technical info */}
+      <p className="text-sm text-white font-semibold mb-2">{getPerLevelText()}</p>
+
+      {/* Flavorful description - smaller subtext */}
+      <p className="text-xs text-gray-500 italic mb-3">{skill.description}</p>
 
       {currentLevel > 0 && (
         <div className="text-sm text-green-400 mb-2">Current: {currentTotalValue}</div>

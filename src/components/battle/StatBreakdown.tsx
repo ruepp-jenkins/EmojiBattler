@@ -1,5 +1,7 @@
 import { Player } from '@core/types/Player';
 import { DamageCalculator } from '@core/battle/DamageCalculator';
+import { SkillTooltip } from '@components/common/SkillTooltip';
+import { getSkillEmoji } from '@utils/skillDisplay';
 
 interface StatBreakdownProps {
   player: Player;
@@ -105,11 +107,18 @@ export function StatBreakdown({
       {player.skills && player.skills.length > 0 && (
         <div className="border-t border-gray-700 pt-3 mt-3">
           <div className="text-sm font-semibold text-purple-400 mb-2">Skills</div>
-          {player.skills.map((skill, idx) => (
-            <div key={idx} className="text-xs text-gray-300">
-              • {skill.skillId} (Lv. {skill.level})
-            </div>
-          ))}
+          <div className="flex flex-wrap gap-2">
+            {player.skills.map((skill, idx) => (
+              <SkillTooltip key={idx} skill={skill}>
+                <div className="relative cursor-help">
+                  <span className="text-2xl">{getSkillEmoji(skill.skillId)}</span>
+                  <span className="absolute -top-1 -right-1 bg-purple-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-bold">
+                    {skill.level}
+                  </span>
+                </div>
+              </SkillTooltip>
+            ))}
+          </div>
         </div>
       )}
     </div>

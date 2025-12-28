@@ -8,7 +8,7 @@ export const SKILL_TREE: Skill[] = [
   {
     id: 'base_attack',
     name: 'Power Training',
-    description: '+2 base attack per level',
+    description: 'Through rigorous training and discipline, you have honed your combat prowess. Each session makes your strikes hit harder and your technique more refined.',
     cost: 2,
     maxLevel: 10,
     effect: {
@@ -19,7 +19,7 @@ export const SKILL_TREE: Skill[] = [
   {
     id: 'base_defense',
     name: 'Fortification',
-    description: '+2 base defense per level',
+    description: 'Years of conditioning have toughened your body and sharpened your reflexes. You can withstand blows that would fell lesser warriors.',
     cost: 2,
     maxLevel: 10,
     effect: {
@@ -30,7 +30,7 @@ export const SKILL_TREE: Skill[] = [
   {
     id: 'max_hp',
     name: 'Vitality',
-    description: '+20 max HP per level',
+    description: 'Your life force burns brighter than others. A robust constitution and unwavering determination allow you to endure far more punishment in battle.',
     cost: 3,
     maxLevel: 5,
     effect: {
@@ -43,7 +43,7 @@ export const SKILL_TREE: Skill[] = [
   {
     id: 'starting_money',
     name: 'Wealth',
-    description: '+50 starting money per level',
+    description: 'Fortune favors you from the start. Whether through inheritance, shrewd investments, or lucky finds, you begin each journey with deeper pockets.',
     cost: 3,
     maxLevel: 5,
     effect: {
@@ -54,7 +54,7 @@ export const SKILL_TREE: Skill[] = [
   {
     id: 'money_per_round',
     name: 'Prosperity',
-    description: '+20 money per round',
+    description: 'Your reputation grows with each victory. Sponsors and admirers reward your success, ensuring a steady flow of coin between battles.',
     cost: 5,
     maxLevel: 5,
     effect: {
@@ -67,7 +67,7 @@ export const SKILL_TREE: Skill[] = [
   {
     id: 'attack_multiplier',
     name: 'Mastery',
-    description: '+5% attack damage per level',
+    description: 'True mastery transcends mere strength. You have learned to strike with precision and purpose, amplifying the effectiveness of every weapon and technique.',
     cost: 5,
     maxLevel: 5,
     effect: {
@@ -78,7 +78,7 @@ export const SKILL_TREE: Skill[] = [
   {
     id: 'defense_multiplier',
     name: 'Resilience',
-    description: '+5% defense per level',
+    description: 'Like a fortress that grows stronger with each siege, your defensive capabilities multiply. Every shield, every guard becomes more effective in your hands.',
     cost: 5,
     maxLevel: 5,
     effect: {
