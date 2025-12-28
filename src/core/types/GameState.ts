@@ -25,6 +25,7 @@ export interface GameState {
   shopInventory: Item[];
   availableItems: Item[]; // Pool of items not yet bought this run
   skillPoints: number;
+  consecutiveWins: number; // Track wins for "every Nth battle" skill point rewards
   battleTimeline: BattleTimeline[];
   gameStartTime: number;
   lastSaveTime?: number;

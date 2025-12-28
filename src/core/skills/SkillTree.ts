@@ -9,7 +9,7 @@ export const SKILL_TREE: Skill[] = [
     id: 'base_attack',
     name: 'Power Training',
     description: '+2 base attack per level',
-    cost: 1,
+    cost: 2,
     maxLevel: 10,
     effect: {
       type: 'baseAttack',
@@ -20,7 +20,7 @@ export const SKILL_TREE: Skill[] = [
     id: 'base_defense',
     name: 'Fortification',
     description: '+2 base defense per level',
-    cost: 1,
+    cost: 2,
     maxLevel: 10,
     effect: {
       type: 'baseDefense',
@@ -31,7 +31,7 @@ export const SKILL_TREE: Skill[] = [
     id: 'max_hp',
     name: 'Vitality',
     description: '+20 max HP per level',
-    cost: 2,
+    cost: 3,
     maxLevel: 5,
     effect: {
       type: 'maxHP',
@@ -44,7 +44,7 @@ export const SKILL_TREE: Skill[] = [
     id: 'starting_money',
     name: 'Wealth',
     description: '+50 starting money per level',
-    cost: 2,
+    cost: 3,
     maxLevel: 5,
     effect: {
       type: 'startingMoney',
@@ -55,7 +55,7 @@ export const SKILL_TREE: Skill[] = [
     id: 'money_per_round',
     name: 'Prosperity',
     description: '+20 money per round',
-    cost: 3,
+    cost: 5,
     maxLevel: 5,
     effect: {
       type: 'moneyPerRound',
@@ -68,7 +68,7 @@ export const SKILL_TREE: Skill[] = [
     id: 'attack_multiplier',
     name: 'Mastery',
     description: '+5% attack damage per level',
-    cost: 3,
+    cost: 5,
     maxLevel: 5,
     effect: {
       type: 'attackMultiplier',
@@ -79,7 +79,7 @@ export const SKILL_TREE: Skill[] = [
     id: 'defense_multiplier',
     name: 'Resilience',
     description: '+5% defense per level',
-    cost: 3,
+    cost: 5,
     maxLevel: 5,
     effect: {
       type: 'defenseMultiplier',

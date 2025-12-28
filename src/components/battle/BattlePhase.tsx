@@ -59,14 +59,21 @@ export function BattlePhase() {
     playerHP = battle.player.stats.currentHP;
     opponentHP = battle.opponent.stats.currentHP;
   } else if (visibleTurns.length > 0) {
-    // Battle in progress, get HP from last visible turn's events
-    const lastTurnEvents = visibleTurns[visibleTurns.length - 1];
-    const lastEvent = lastTurnEvents[lastTurnEvents.length - 1];
-    if (lastEvent.currentPlayerHP !== undefined) {
-      playerHP = lastEvent.currentPlayerHP;
-    }
-    if (lastEvent.currentOpponentHP !== undefined) {
-      opponentHP = lastEvent.currentOpponentHP;
+    // Battle in progress, get HP from the last attack event (not just any event)
+    // Search backwards through all visible turns to find the most recent attack event with HP data
+    for (let i = visibleTurns.length - 1; i >= 0; i--) {
+      const turnEvents = visibleTurns[i];
+      // Search backwards through events in this turn
+      for (let j = turnEvents.length - 1; j >= 0; j--) {
+        const event = turnEvents[j];
+        if (event.type === 'attack' && event.currentPlayerHP !== undefined && event.currentOpponentHP !== undefined) {
+          playerHP = event.currentPlayerHP;
+          opponentHP = event.currentOpponentHP;
+          // Found the most recent HP values, exit both loops
+          i = -1;
+          break;
+        }
+      }
     }
   }
 
@@ -386,6 +393,7 @@ function TurnDisplay({
 }) {
   // Find ALL attack events (both player and opponent)
   const attackEvents = turnEvents.filter((e) => e.type === 'attack');
+  const healEvents = turnEvents.filter((e) => e.type === 'heal');
   const effectEvents = turnEvents.filter(
     (e) => e.type === 'effect' || e.type === 'speedIncrease' || e.type === 'damageMultiplier'
   );
@@ -428,6 +436,46 @@ function TurnDisplay({
           opponentItems={opponentItems}
         />
       ))}
+
+      {/* Healing Section */}
+      {healEvents.length > 0 && (
+        <div className="border border-green-700 rounded-lg p-3 bg-green-900/10">
+          <div className="text-green-400 font-semibold text-sm mb-1">💚 Healing</div>
+          <div className="ml-2 space-y-1">
+            {healEvents.map((event, idx) => {
+              const healer = event.attacker === 'player' ? 'You' : 'Opponent';
+              return (
+                <div key={idx} className="text-xs">
+                  <div className="text-gray-300 mb-0.5">
+                    <span className="font-semibold text-green-300">{healer}</span> healed for{' '}
+                    <span className="font-bold text-green-400">+{event.details.reduce((sum, d) => sum + (d.healAmount || 0), 0)} HP</span>
+                  </div>
+                  <div className="ml-4 space-y-0.5">
+                    {event.details.map((detail, detailIdx) => {
+                      const item = findItemByEmoji(detail.itemEmoji || '', playerItems, opponentItems);
+                      return (
+                        <div key={detailIdx} className="text-gray-400 flex items-center gap-1">
+                          {item ? (
+                            <ItemHoverWrapper item={item}>
+                              <span className="cursor-help">{detail.itemEmoji}</span>
+                            </ItemHoverWrapper>
+                          ) : (
+                            <span>{detail.itemEmoji}</span>
+                          )}
+                          <span className="text-green-300 font-semibold">+{detail.healAmount}</span>
+                          {detail.effectDescription && (
+                            <span className="text-gray-500 text-[10px]">({detail.effectDescription})</span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Effects Section */}
       {effectEvents.length > 0 && (

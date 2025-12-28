@@ -35,6 +35,7 @@ export class GameEngine {
       shopInventory: [],
       availableItems: ItemDatabase.getAllItems(),
       skillPoints: 0,
+      consecutiveWins: 0,
       battleTimeline: [],
       gameStartTime: Date.now(),
     };
@@ -259,6 +260,19 @@ export class GameEngine {
     };
     gameState.battleTimeline.push(timelineEntry);
 
+    // Award skill points for winning battles
+    if (playerWon) {
+      gameState.consecutiveWins += 1;
+      const skillPointsEarned = this.calculateSkillPointsForBattle(
+        gameState.difficulty,
+        gameState.consecutiveWins
+      );
+      gameState.skillPoints += skillPointsEarned;
+    } else {
+      // Reset consecutive wins on loss
+      gameState.consecutiveWins = 0;
+    }
+
     // Handle life loss
     if (lostLife) {
       gameState.player.stats.lives -= 1;
@@ -273,8 +287,6 @@ export class GameEngine {
     // Check if game is won (completed all rounds)
     if (gameState.currentRound >= gameState.maxRounds) {
       gameState.phase = 'gameOver';
-      // Award skill points for completion
-      gameState.skillPoints += this.calculateSkillPointsEarned(gameState.difficulty);
       return;
     }
 
@@ -350,25 +362,41 @@ export class GameEngine {
   }
 
   /**
-   * Calculate skill points earned for completing a difficulty
+   * Calculate skill points earned for winning a battle
+   * Normal: 1 point every 3rd win
+   * Hard: 1 point every 2nd win
+   * Expert: 1 point per win
+   * Master: 2 points per win
+   * Torment: 4 points per win
    */
-  private static calculateSkillPointsEarned(difficulty: Difficulty): number {
-    const basePoints = {
-      normal: 1,
-      hard: 2,
-      expert: 3,
-      master: 4,
-      torment: 5,
-    };
+  private static calculateSkillPointsForBattle(
+    difficulty: Difficulty,
+    consecutiveWins: number
+  ): number {
+    switch (difficulty.level) {
+      case 'normal':
+        // Award 1 point every 3rd win
+        return consecutiveWins % 3 === 0 ? 1 : 0;
 
-    let points = basePoints[difficulty.level];
+      case 'hard':
+        // Award 1 point every 2nd win
+        return consecutiveWins % 2 === 0 ? 1 : 0;
 
-    // Bonus for torment levels
-    if (difficulty.level === 'torment' && difficulty.tormentLevel) {
-      points += difficulty.tormentLevel;
+      case 'expert':
+        // Award 1 point per win
+        return 1;
+
+      case 'master':
+        // Award 2 points per win
+        return 2;
+
+      case 'torment':
+        // Award 4 points per win (base torment difficulty)
+        return 4;
+
+      default:
+        return 0;
     }
-
-    return points;
   }
 
   /**
