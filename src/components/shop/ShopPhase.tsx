@@ -93,7 +93,7 @@ export function ShopPhase() {
             <h2 className="text-xl font-bold mb-4">
               Inventory ({player.items.length}/{GAME_CONSTANTS.MAX_ITEMS})
             </h2>
-            <div className="grid grid-cols-2 gap-2 mb-6">
+            <div className="grid grid-cols-3 gap-2 mb-6">
               {player.items.map((item) => (
                 <ItemHoverWrapper key={item.id} item={item} showPrice>
                   <ItemCard
