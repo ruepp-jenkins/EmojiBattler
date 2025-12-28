@@ -55,8 +55,17 @@ export function StatBreakdown({
         <div className="text-sm font-semibold text-red-400 mb-1">Attack</div>
         <div className="text-xl font-bold">{stats.totalAttack}</div>
         <div className="text-xs text-gray-400">
-          Base: {player.stats.baseAttack} + Items: {stats.breakdown.items.attack}
-          {stats.attackMultiplier > 0 && ` × ${(1 + stats.attackMultiplier).toFixed(2)}`}
+          {(() => {
+            if (stats.attackMultiplier > 1.0) {
+              const rawTotal = Math.round(stats.totalAttack / stats.attackMultiplier);
+              const rawItems = rawTotal - player.stats.baseAttack;
+              const multiplierBonus = stats.totalAttack - rawTotal;
+              return `Base: ${player.stats.baseAttack} + Items: ${rawItems} + Multiplier (${stats.attackMultiplier.toFixed(2)}): ${multiplierBonus}`;
+            } else {
+              const rawItems = stats.totalAttack - player.stats.baseAttack;
+              return `Base: ${player.stats.baseAttack} + Items: ${rawItems}`;
+            }
+          })()}
         </div>
       </div>
 
@@ -69,7 +78,7 @@ export function StatBreakdown({
         </div>
         <div className="text-xs text-gray-400">
           Base: {player.stats.baseDefense} + Items: {stats.breakdown.items.defense}
-          {stats.defenseMultiplier > 0 && ` × ${(1 + stats.defenseMultiplier).toFixed(2)}`}
+          {stats.defenseMultiplier > 1.0 && ` (×${stats.defenseMultiplier.toFixed(2)} applied)`}
         </div>
         {stats.defensePercent >= 0.9 && (
           <div className="text-xs text-yellow-400 mt-1">⚠️ Capped at 90%</div>
