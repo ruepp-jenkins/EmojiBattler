@@ -211,6 +211,9 @@ export class GameEngine {
     // Track purchased item (leave empty slot in shop)
     gameState.purchasedShopItemIds.push(item.id);
 
+    // Update player's maxHP if the item has maxHPBonus
+    this.updatePlayerMaxHP(gameState.player);
+
     return true;
   }
 
@@ -224,6 +227,9 @@ export class GameEngine {
 
     // Add to sold items section
     gameState.soldItems.push(item);
+
+    // Update player's maxHP if the item had maxHPBonus
+    this.updatePlayerMaxHP(gameState.player);
 
     return true;
   }
@@ -349,6 +355,40 @@ export class GameEngine {
       }
     }
     return multiplier;
+  }
+
+  /**
+   * Calculate total max HP bonus from items with maxHPBonus effects
+   */
+  private static getMaxHPBonusFromItems(player: Player): number {
+    let bonus = 0;
+    for (const item of player.items) {
+      for (const effect of item.effects) {
+        if (effect.trigger === 'passive' && effect.effectType === 'maxHPBonus') {
+          bonus += effect.value;
+        }
+      }
+    }
+    return bonus;
+  }
+
+  /**
+   * Update player's maxHP based on items and skills
+   */
+  private static updatePlayerMaxHP(player: Player): void {
+    const itemBonus = this.getMaxHPBonusFromItems(player);
+    const baseMaxHP = GAME_CONSTANTS.STARTING_HP;
+
+    // Get skill bonus directly from player's skills
+    const skillBonus = SkillManager.getSkillSummary(player.skills).maxHP;
+
+    // Set new maxHP = base + skills + items
+    player.stats.maxHP = baseMaxHP + skillBonus + itemBonus;
+
+    // Ensure currentHP doesn't exceed maxHP
+    if (player.stats.currentHP > player.stats.maxHP) {
+      player.stats.currentHP = player.stats.maxHP;
+    }
   }
 
   /**

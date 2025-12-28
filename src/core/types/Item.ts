@@ -37,7 +37,8 @@ export type EffectType =
   | 'preventLifeLoss'
   | 'reduceOpponentAttack'
   | 'moneyBonus' // Passive bonus money per round
-  | 'moneyMultiplier'; // Multiplies money earned (with duration and breakable)
+  | 'moneyMultiplier' // Multiplies money earned (with duration and breakable)
+  | 'maxHPBonus'; // Increases maximum HP
 
 export interface ItemEffect {
   trigger: EffectTrigger;

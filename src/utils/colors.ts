@@ -58,6 +58,7 @@ export function getEffectTypeTextClass(effectType: EffectType): string {
     reduceOpponentAttack: 'text-indigo-400',
     moneyBonus: 'text-yellow-300',
     moneyMultiplier: 'text-yellow-200',
+    maxHPBonus: 'text-red-300',
   };
   return colorMap[effectType];
 }

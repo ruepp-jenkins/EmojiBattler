@@ -1640,6 +1640,268 @@ const CORE_ITEMS: Omit<Item, 'price' | 'canSell'>[] = [
     ],
     description: 'DOUBLES money for 3 shops, then breaks! Limited time wealth.',
   },
+
+  // === MAX HP ITEMS ===
+  // Common HP Items
+  {
+    id: 'apple',
+    emoji: '🍎',
+    name: 'Apple',
+    rarity: ItemRarity.Common,
+    type: ItemType.Passive,
+    baseAttack: 0,
+    baseDefense: 0,
+    effects: [
+      {
+        trigger: EffectTrigger.Passive,
+        effectType: 'maxHPBonus',
+        value: 10,
+      },
+    ],
+    description: 'An apple a day! +10 max HP.',
+  },
+  {
+    id: 'bread',
+    emoji: '🍞',
+    name: 'Bread',
+    rarity: ItemRarity.Common,
+    type: ItemType.Passive,
+    baseAttack: 0,
+    baseDefense: 0,
+    effects: [
+      {
+        trigger: EffectTrigger.Passive,
+        effectType: 'maxHPBonus',
+        value: 15,
+      },
+    ],
+    description: 'Staple food. +15 max HP.',
+  },
+  {
+    id: 'cheese',
+    emoji: '🧀',
+    name: 'Cheese',
+    rarity: ItemRarity.Common,
+    type: ItemType.Passive,
+    baseAttack: 0,
+    baseDefense: 0,
+    effects: [
+      {
+        trigger: EffectTrigger.Passive,
+        effectType: 'maxHPBonus',
+        value: 12,
+      },
+    ],
+    description: 'Rich in nutrients. +12 max HP.',
+  },
+
+  // Rare HP Items
+  {
+    id: 'pizza',
+    emoji: '🍕',
+    name: 'Pizza',
+    rarity: ItemRarity.Rare,
+    type: ItemType.Passive,
+    baseAttack: 0,
+    baseDefense: 0,
+    effects: [
+      {
+        trigger: EffectTrigger.Passive,
+        effectType: 'maxHPBonus',
+        value: 25,
+      },
+    ],
+    description: 'Delicious meal! +25 max HP.',
+  },
+  {
+    id: 'steak',
+    emoji: '🥩',
+    name: 'Steak',
+    rarity: ItemRarity.Rare,
+    type: ItemType.Passive,
+    baseAttack: 0,
+    baseDefense: 0,
+    effects: [
+      {
+        trigger: EffectTrigger.Passive,
+        effectType: 'maxHPBonus',
+        value: 30,
+      },
+    ],
+    description: 'Protein power! +30 max HP.',
+  },
+  {
+    id: 'sushi',
+    emoji: '🍣',
+    name: 'Sushi',
+    rarity: ItemRarity.Rare,
+    type: ItemType.Passive,
+    baseAttack: 2,
+    baseDefense: 0,
+    effects: [
+      {
+        trigger: EffectTrigger.Passive,
+        effectType: 'maxHPBonus',
+        value: 28,
+      },
+    ],
+    description: 'Fresh and healthy! +28 max HP with minor attack.',
+  },
+  {
+    id: 'cake',
+    emoji: '🎂',
+    name: 'Cake',
+    rarity: ItemRarity.Rare,
+    type: ItemType.Passive,
+    baseAttack: 0,
+    baseDefense: 0,
+    effects: [
+      {
+        trigger: EffectTrigger.Passive,
+        effectType: 'maxHPBonus',
+        value: 35,
+      },
+    ],
+    description: 'Sweet celebration! +35 max HP.',
+  },
+
+  // Epic HP Items
+  {
+    id: 'burger',
+    emoji: '🍔',
+    name: 'Burger',
+    rarity: ItemRarity.Epic,
+    type: ItemType.Passive,
+    baseAttack: 0,
+    baseDefense: 0,
+    effects: [
+      {
+        trigger: EffectTrigger.Passive,
+        effectType: 'maxHPBonus',
+        value: 45,
+      },
+    ],
+    description: 'Hearty meal! +45 max HP.',
+  },
+  {
+    id: 'ramen',
+    emoji: '🍜',
+    name: 'Ramen',
+    rarity: ItemRarity.Epic,
+    type: ItemType.Passive,
+    baseAttack: 3,
+    baseDefense: 7,
+    effects: [
+      {
+        trigger: EffectTrigger.Passive,
+        effectType: 'maxHPBonus',
+        value: 40,
+      },
+    ],
+    description: 'Nourishing bowl! +40 max HP with balanced stats.',
+  },
+  {
+    id: 'taco',
+    emoji: '🌮',
+    name: 'Taco',
+    rarity: ItemRarity.Epic,
+    type: ItemType.Passive,
+    baseAttack: 0,
+    baseDefense: 0,
+    effects: [
+      {
+        trigger: EffectTrigger.Passive,
+        effectType: 'maxHPBonus',
+        value: 50,
+      },
+    ],
+    description: 'Delicious feast! +50 max HP.',
+  },
+  {
+    id: 'icecream',
+    emoji: '🍦',
+    name: 'Ice Cream',
+    rarity: ItemRarity.Epic,
+    type: ItemType.Passive,
+    baseAttack: 0,
+    baseDefense: 0,
+    effects: [
+      {
+        trigger: EffectTrigger.Passive,
+        effectType: 'maxHPBonus',
+        value: 42,
+      },
+      {
+        trigger: EffectTrigger.OnBattleStart,
+        effectType: 'heal',
+        value: 15,
+      },
+    ],
+    description: 'Sweet treat! +42 max HP and heals 15 HP at battle start.',
+  },
+
+  // Legendary HP Items
+  {
+    id: 'feast',
+    emoji: '🍽️',
+    name: 'Royal Feast',
+    rarity: ItemRarity.Legendary,
+    type: ItemType.Passive,
+    baseAttack: 5,
+    baseDefense: 14,
+    effects: [
+      {
+        trigger: EffectTrigger.Passive,
+        effectType: 'maxHPBonus',
+        value: 75,
+      },
+    ],
+    description: 'Fit for a king! +75 max HP with balanced stats.',
+  },
+  {
+    id: 'elixir',
+    emoji: '🧪',
+    name: 'Life Elixir',
+    rarity: ItemRarity.Legendary,
+    type: ItemType.Passive,
+    baseAttack: 0,
+    baseDefense: 0,
+    effects: [
+      {
+        trigger: EffectTrigger.Passive,
+        effectType: 'maxHPBonus',
+        value: 100,
+      },
+      {
+        trigger: EffectTrigger.OnTurnEnd,
+        effectType: 'heal',
+        value: 3,
+      },
+    ],
+    description: 'Magical potion! +100 max HP and regenerates 3 HP per turn.',
+  },
+  {
+    id: 'ambrosia',
+    emoji: '🍯',
+    name: 'Ambrosia',
+    rarity: ItemRarity.Legendary,
+    type: ItemType.Passive,
+    baseAttack: 0,
+    baseDefense: 21,
+    effects: [
+      {
+        trigger: EffectTrigger.Passive,
+        effectType: 'maxHPBonus',
+        value: 80,
+      },
+      {
+        trigger: EffectTrigger.OnAttack,
+        effectType: 'heal',
+        value: 5,
+      },
+    ],
+    description: 'Food of the gods! +80 max HP, +21 defense, and heals 5 HP on attack.',
+  },
 ];
 
 // Export the database
@@ -1728,6 +1990,9 @@ export class ItemDatabase {
           // Multiplier is very powerful, price based on expected bonus
           // 2x multiplier for 3 rounds = 300 extra gold (assuming 100/round base)
           value += (effect.value - 1) * 100 * (effect.maxDuration || 3) * 4;
+          break;
+        case 'maxHPBonus':
+          value += effect.value * 8; // Max HP is valuable, price at 8x the HP value
           break;
       }
     }

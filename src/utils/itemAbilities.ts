@@ -18,6 +18,7 @@ const EFFECT_EMOJIS: Record<EffectType, string> = {
   reduceOpponentAttack: '🔻',
   moneyBonus: '💰',
   moneyMultiplier: '💎',
+  maxHPBonus: '❤️',
 };
 
 /**
