@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { useItemTooltip } from '@context/ItemTooltipContext';
 import { getRarityBorderClass, getItemNameColorClass } from '@utils/colors';
 import { formatMoney } from '@utils/formatting';
+import { getItemNameWithAbilities } from '@utils/itemAbilities';
 
 export function ItemTooltipDisplay() {
   const { tooltipState } = useItemTooltip();
@@ -84,7 +85,7 @@ export function ItemTooltipDisplay() {
           {item.emoji}
           {isBroken && <span className="text-sm ml-1">💔</span>}
         </span>
-        <span className={`${nameColorClass} ${isBroken ? 'line-through' : ''}`}>{item.name}</span>
+        <span className={`${nameColorClass} ${isBroken ? 'line-through' : ''}`}>{getItemNameWithAbilities(item)}</span>
       </div>
 
       <div className="text-sm mb-2">

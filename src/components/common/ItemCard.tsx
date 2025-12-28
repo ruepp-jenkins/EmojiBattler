@@ -1,6 +1,7 @@
 import { Item } from '@core/types/Item';
 import { getRarityBorderClass, getRarityBgClass, getItemNameColorClass } from '@utils/colors';
 import { formatMoney } from '@utils/formatting';
+import { getItemNameWithAbilities } from '@utils/itemAbilities';
 
 interface ItemCardProps {
   item: Item;
@@ -31,7 +32,7 @@ export function ItemCard({ item, onClick, showPrice = false, disabled = false }:
 
       {/* Name */}
       <div className={`text-sm font-semibold text-center ${nameColorClass} truncate ${isBroken ? 'line-through' : ''}`}>
-        {item.name}
+        {getItemNameWithAbilities(item)}
       </div>
 
       {/* Price */}
