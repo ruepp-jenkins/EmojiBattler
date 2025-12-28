@@ -1021,11 +1021,11 @@ const CORE_ITEMS: Omit<Item, 'price' | 'canSell'>[] = [
     effects: [
       {
         trigger: EffectTrigger.Passive,
-        effectType: 'speedBoost',
+        effectType: 'attackMultiply',
         value: 0.2,
       },
     ],
-    description: 'Swift strikes! Increases attack speed by 20%.',
+    description: 'Swift strikes! Increases attack damage by 20%.',
   },
 
   // === MORE LEGENDARY ITEMS ===
@@ -1442,11 +1442,11 @@ const CORE_ITEMS: Omit<Item, 'price' | 'canSell'>[] = [
     effects: [
       {
         trigger: EffectTrigger.Passive,
-        effectType: 'speedBoost',
+        effectType: 'attackMultiply',
         value: 0.15,
       },
     ],
-    description: 'Blazing speed! +15% attack speed.',
+    description: 'Blazing speed! +15% attack damage.',
   },
 
   // === MONEY ITEMS ===
