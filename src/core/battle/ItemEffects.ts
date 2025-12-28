@@ -65,7 +65,36 @@ export class ItemEffects {
         const healAmount = DamageCalculator.calculateHeal(player, effect);
         const actualHeal = DamageCalculator.applyHeal(player, healAmount);
 
-        if (actualHeal > 0) {
+        // Always show heal attempts, even if they heal 0 HP (when at max HP)
+        events.push({
+          turn,
+          attacker,
+          type: 'heal',
+          details: [
+            {
+              itemId: item.id,
+              itemName: item.name,
+              itemEmoji: item.emoji,
+              healAmount: actualHeal,
+              healer: attacker, // Track who is healing
+              effectDescription: actualHeal === 0 ? '(at max HP)' : undefined,
+            },
+          ],
+          currentPlayerHP: isPlayer ? player.stats.currentHP : undefined,
+          currentOpponentHP: !isPlayer ? player.stats.currentHP : undefined,
+          message: actualHeal > 0
+            ? `${item.emoji} ${item.name} heals for ${actualHeal} HP!`
+            : `${item.emoji} ${item.name} heal blocked (at max HP)`,
+        });
+        break;
+      }
+
+      case 'vampire': {
+        if (damageDealt && damageDealt > 0) {
+          const healAmount = DamageCalculator.calculateHeal(player, effect, damageDealt);
+          const actualHeal = DamageCalculator.applyHeal(player, healAmount);
+
+          // Always show vampire heal attempts, even if they heal 0 HP (when at max HP)
           events.push({
             turn,
             attacker,
@@ -76,40 +105,20 @@ export class ItemEffects {
                 itemName: item.name,
                 itemEmoji: item.emoji,
                 healAmount: actualHeal,
+                healer: attacker, // Track who is healing
+                effectDescription:
+                  actualHeal === 0
+                    ? `Vampire (${Math.round(effect.value * 100)}%) - at max HP`
+                    : `Vampire (${Math.round(effect.value * 100)}%)`,
               },
             ],
             currentPlayerHP: isPlayer ? player.stats.currentHP : undefined,
             currentOpponentHP: !isPlayer ? player.stats.currentHP : undefined,
-            message: `${item.emoji} ${item.name} heals for ${actualHeal} HP!`,
+            message:
+              actualHeal > 0
+                ? `${item.emoji} ${item.name} drains ${actualHeal} HP!`
+                : `${item.emoji} ${item.name} vampire heal blocked (at max HP)`,
           });
-        }
-        break;
-      }
-
-      case 'vampire': {
-        if (damageDealt && damageDealt > 0) {
-          const healAmount = DamageCalculator.calculateHeal(player, effect, damageDealt);
-          const actualHeal = DamageCalculator.applyHeal(player, healAmount);
-
-          if (actualHeal > 0) {
-            events.push({
-              turn,
-              attacker,
-              type: 'heal',
-              details: [
-                {
-                  itemId: item.id,
-                  itemName: item.name,
-                  itemEmoji: item.emoji,
-                  healAmount: actualHeal,
-                  effectDescription: `Vampire (${Math.round(effect.value * 100)}%)`,
-                },
-              ],
-              currentPlayerHP: isPlayer ? player.stats.currentHP : undefined,
-              currentOpponentHP: !isPlayer ? player.stats.currentHP : undefined,
-              message: `${item.emoji} ${item.name} drains ${actualHeal} HP!`,
-            });
-          }
         }
         break;
       }

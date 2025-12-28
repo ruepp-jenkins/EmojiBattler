@@ -35,6 +35,7 @@ export class GameEngine {
       aiShopInventory: [],
       purchasedShopItemIds: [],
       soldItems: [],
+      shopTransactionLog: [],
       skillPoints: 0,
       consecutiveWins: 0,
       battleTimeline: [],
@@ -244,6 +245,14 @@ export class GameEngine {
     const playerMoneyEarned = Math.round(basePlayerMoney * playerMultiplier);
     gameState.player.stats.money += playerMoneyEarned;
 
+    // Log money received
+    gameState.shopTransactionLog.push({
+      round: gameState.currentRound,
+      type: 'money_received',
+      amount: playerMoneyEarned,
+      timestamp: Date.now(),
+    });
+
     // Update duration-based money items (like Lucky Charm)
     this.updateMoneyItemDurations(gameState.player);
 
@@ -281,6 +290,14 @@ export class GameEngine {
     // Track purchased item (leave empty slot in shop)
     gameState.purchasedShopItemIds.push(item.id);
 
+    // Log transaction
+    gameState.shopTransactionLog.push({
+      round: gameState.currentRound,
+      type: 'item_bought',
+      item: { ...item }, // Clone item to preserve state
+      timestamp: Date.now(),
+    });
+
     // Update player's maxHP if the item has maxHPBonus
     this.updatePlayerMaxHP(gameState.player);
 
@@ -297,6 +314,14 @@ export class GameEngine {
 
     // Add to sold items section
     gameState.soldItems.push(item);
+
+    // Log transaction
+    gameState.shopTransactionLog.push({
+      round: gameState.currentRound,
+      type: 'item_sold',
+      item: { ...item }, // Clone item to preserve state
+      timestamp: Date.now(),
+    });
 
     // Update player's maxHP if the item had maxHPBonus
     this.updatePlayerMaxHP(gameState.player);

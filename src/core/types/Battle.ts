@@ -19,6 +19,7 @@ export interface BattleEventDetail {
   blockPercent?: number;
   finalDamage?: number;
   healAmount?: number;
+  healer?: 'player' | 'opponent'; // Track who is doing the healing
   effectDescription?: string;
 }
 

@@ -6,6 +6,16 @@ import { AppliedSkill } from './Skills';
 
 export type GamePhase = 'menu' | 'shop' | 'battle' | 'summary' | 'gameOver';
 
+export type ShopTransactionType = 'money_received' | 'item_bought' | 'item_sold';
+
+export interface ShopTransaction {
+  round: number;
+  type: ShopTransactionType;
+  amount?: number; // Money amount for money_received
+  item?: Item; // Item for bought/sold
+  timestamp: number;
+}
+
 export interface BattleTimeline {
   round: number;
   playerWon: boolean;
@@ -26,6 +36,7 @@ export interface GameState {
   aiShopInventory: Item[]; // AI's shop (unique items, excludes AI's owned items)
   purchasedShopItemIds: string[]; // Track which shop items were bought (for empty slots)
   soldItems: Item[]; // Items sold by player during current shop phase
+  shopTransactionLog: ShopTransaction[]; // Persistent log of all shop transactions for the run
   skillPoints: number;
   consecutiveWins: number; // Track wins for "every Nth battle" skill point rewards
   battleTimeline: BattleTimeline[];

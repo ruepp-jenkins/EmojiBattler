@@ -393,12 +393,12 @@ const CORE_ITEMS: Omit<Item, 'price' | 'canSell'>[] = [
     baseDefense: 0,
     effects: [
       {
-        trigger: EffectTrigger.OnTurnEnd,
+        trigger: EffectTrigger.OnAttack,
         effectType: 'heal',
         value: 5,
       },
     ],
-    description: 'Regenerates 5 HP every turn.',
+    description: 'Heals 5 HP with each attack.',
   },
   {
     id: 'coin',
@@ -503,12 +503,12 @@ const CORE_ITEMS: Omit<Item, 'price' | 'canSell'>[] = [
     baseDefense: 42,
     effects: [
       {
-        trigger: EffectTrigger.OnTurnEnd,
+        trigger: EffectTrigger.OnAttack,
         effectType: 'heal',
         value: 8,
       },
     ],
-    description: 'Endless protection with regeneration.',
+    description: 'Endless protection. Heals 8 HP per attack.',
   },
 
   // === LEGENDARY PASSIVE ITEMS ===
@@ -691,12 +691,12 @@ const CORE_ITEMS: Omit<Item, 'price' | 'canSell'>[] = [
     baseDefense: 0,
     effects: [
       {
-        trigger: EffectTrigger.OnTurnEnd,
+        trigger: EffectTrigger.OnAttack,
         effectType: 'heal',
         value: 3,
       },
     ],
-    description: 'Magical healing every turn.',
+    description: 'Heals 3 HP with each attack.',
   },
   {
     id: 'crystal',
@@ -969,12 +969,12 @@ const CORE_ITEMS: Omit<Item, 'price' | 'canSell'>[] = [
     baseDefense: 21,
     effects: [
       {
-        trigger: EffectTrigger.OnTurnEnd,
+        trigger: EffectTrigger.OnAttack,
         effectType: 'heal',
         value: 6,
       },
     ],
-    description: 'Mythical creature with balanced power and healing.',
+    description: 'Heals 6 HP per attack. Balanced stats.',
   },
   {
     id: 'trex',
@@ -1086,12 +1086,12 @@ const CORE_ITEMS: Omit<Item, 'price' | 'canSell'>[] = [
         currentStacks: 0,
       },
       {
-        trigger: EffectTrigger.OnTurnEnd,
+        trigger: EffectTrigger.OnAttack,
         effectType: 'heal',
         value: 4,
       },
     ],
-    description: 'Accelerates time! Gains +3 attack per turn and heals.',
+    description: 'Gains +3 attack per turn and heals 4 HP per attack.',
   },
   {
     id: 'godhand',
@@ -1271,12 +1271,12 @@ const CORE_ITEMS: Omit<Item, 'price' | 'canSell'>[] = [
     baseDefense: 7,
     effects: [
       {
-        trigger: EffectTrigger.OnDefend,
+        trigger: EffectTrigger.OnAttack,
         effectType: 'heal',
         value: 1,
       },
     ],
-    description: 'Slippery defense with minor healing.',
+    description: 'Heals 1 HP per attack.',
   },
   {
     id: 'penguin',
@@ -1316,12 +1316,12 @@ const CORE_ITEMS: Omit<Item, 'price' | 'canSell'>[] = [
     baseDefense: 11,
     effects: [
       {
-        trigger: EffectTrigger.OnTurnEnd,
+        trigger: EffectTrigger.OnAttack,
         effectType: 'heal',
         value: 2,
       },
     ],
-    description: 'Graceful. Heals every turn.',
+    description: 'Heals 2 HP per attack.',
   },
   {
     id: 'parrot',
@@ -1362,12 +1362,12 @@ const CORE_ITEMS: Omit<Item, 'price' | 'canSell'>[] = [
     baseDefense: 0,
     effects: [
       {
-        trigger: EffectTrigger.OnTurnEnd,
+        trigger: EffectTrigger.OnAttack,
         effectType: 'heal',
         value: 1,
       },
     ],
-    description: 'Lucky bug. Minor healing.',
+    description: 'Heals 1 HP per attack.',
   },
   {
     id: 'trophy',
@@ -1407,12 +1407,12 @@ const CORE_ITEMS: Omit<Item, 'price' | 'canSell'>[] = [
     baseDefense: 25,
     effects: [
       {
-        trigger: EffectTrigger.OnTurnEnd,
+        trigger: EffectTrigger.OnAttack,
         effectType: 'heal',
         value: 4,
       },
     ],
-    description: 'Lunar protection with healing.',
+    description: 'Heals 4 HP per attack.',
   },
   {
     id: 'earth',
@@ -1424,12 +1424,12 @@ const CORE_ITEMS: Omit<Item, 'price' | 'canSell'>[] = [
     baseDefense: 49,
     effects: [
       {
-        trigger: EffectTrigger.OnTurnEnd,
+        trigger: EffectTrigger.OnAttack,
         effectType: 'heal',
         value: 7,
       },
     ],
-    description: 'Planet-level defense with strong healing.',
+    description: 'Heals 7 HP per attack. Massive defense.',
   },
   {
     id: 'comet',
@@ -1832,12 +1832,12 @@ const CORE_ITEMS: Omit<Item, 'price' | 'canSell'>[] = [
         value: 42,
       },
       {
-        trigger: EffectTrigger.OnBattleStart,
+        trigger: EffectTrigger.OnAttack,
         effectType: 'heal',
-        value: 15,
+        value: 3,
       },
     ],
-    description: 'Sweet treat! +42 max HP and heals 15 HP at battle start.',
+    description: '+42 max HP and heals 3 HP per attack.',
   },
 
   // Legendary HP Items
@@ -1873,12 +1873,12 @@ const CORE_ITEMS: Omit<Item, 'price' | 'canSell'>[] = [
         value: 100,
       },
       {
-        trigger: EffectTrigger.OnTurnEnd,
+        trigger: EffectTrigger.OnAttack,
         effectType: 'heal',
         value: 3,
       },
     ],
-    description: 'Magical potion! +100 max HP and regenerates 3 HP per turn.',
+    description: '+100 max HP and heals 3 HP per attack.',
   },
   {
     id: 'ambrosia',

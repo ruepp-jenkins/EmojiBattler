@@ -2,6 +2,7 @@ import { useGame } from '@context/GameContext';
 import { useItemTooltip } from '@context/ItemTooltipContext';
 import { Item } from '@core/types/Item';
 import { Player } from '@core/types/Player';
+import { ShopTransaction } from '@core/types/GameState';
 import { ItemCard } from '@components/common/ItemCard';
 import { ItemHoverWrapper } from '@components/common/ItemHoverWrapper';
 import { Button } from '@components/common/Button';
@@ -14,7 +15,7 @@ export function ShopPhase() {
 
   if (!gameState) return null;
 
-  const { player, playerShopInventory, purchasedShopItemIds, soldItems, currentRound, maxRounds } = gameState;
+  const { player, playerShopInventory, purchasedShopItemIds, soldItems, currentRound, maxRounds, shopTransactionLog } = gameState;
 
   const handleBuyItem = (item: Item) => {
     if (player.items.length >= GAME_CONSTANTS.MAX_ITEMS) {
@@ -179,6 +180,20 @@ export function ShopPhase() {
               </div>
             </div>
 
+            {/* Transaction Log */}
+            <div className="card mb-4">
+              <h3 className="text-lg font-bold mb-3">Transaction Log</h3>
+              <div className="space-y-1 text-xs max-h-48 overflow-y-auto pr-2 scrollbar-thin">
+                {shopTransactionLog.length === 0 ? (
+                  <div className="text-gray-500 text-center py-2">No transactions yet</div>
+                ) : (
+                  [...shopTransactionLog].reverse().map((transaction, idx) => (
+                    <TransactionLogEntry key={idx} transaction={transaction} />
+                  ))
+                )}
+              </div>
+            </div>
+
             {/* Ready Button */}
             <Button variant="success" onClick={startBattle} className="w-full text-lg py-4">
               Ready for Battle! ⚔️
@@ -188,6 +203,58 @@ export function ShopPhase() {
       </div>
     </div>
   );
+}
+
+function TransactionLogEntry({ transaction }: { transaction: ShopTransaction }) {
+  const { showTooltip, hideTooltip } = useItemTooltip();
+
+  if (transaction.type === 'money_received') {
+    return (
+      <div className="flex items-center gap-2 text-green-400 py-1 border-b border-gray-700">
+        <span className="text-lg">💰</span>
+        <span>Round {transaction.round}:</span>
+        <span className="font-semibold">+{formatMoney(transaction.amount || 0)}</span>
+      </div>
+    );
+  }
+
+  if (transaction.type === 'item_bought' && transaction.item) {
+    return (
+      <div
+        className="flex items-center gap-2 text-blue-400 py-1 border-b border-gray-700 cursor-help"
+        onMouseEnter={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect();
+          showTooltip(transaction.item!, rect.left, rect.top, { showPrice: true });
+        }}
+        onMouseLeave={hideTooltip}
+      >
+        <span className="text-lg">{transaction.item.emoji}</span>
+        <span>Round {transaction.round}:</span>
+        <span>Bought {transaction.item.name}</span>
+        <span className="text-red-400 ml-auto">-{formatMoney(transaction.item.price)}</span>
+      </div>
+    );
+  }
+
+  if (transaction.type === 'item_sold' && transaction.item) {
+    return (
+      <div
+        className="flex items-center gap-2 text-yellow-400 py-1 border-b border-gray-700 cursor-help"
+        onMouseEnter={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect();
+          showTooltip(transaction.item!, rect.left, rect.top, { showPrice: true });
+        }}
+        onMouseLeave={hideTooltip}
+      >
+        <span className="text-lg">{transaction.item.emoji}</span>
+        <span>Round {transaction.round}:</span>
+        <span>Sold {transaction.item.name}</span>
+        <span className="text-green-400 ml-auto">+{formatMoney(Math.floor(transaction.item.price / 2))}</span>
+      </div>
+    );
+  }
+
+  return null;
 }
 
 function calculateTotalAttack(player: Player): number {

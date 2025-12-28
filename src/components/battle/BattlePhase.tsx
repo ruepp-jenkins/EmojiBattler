@@ -158,7 +158,7 @@ export function BattlePhase() {
                 <div className="text-sm font-semibold text-green-400 mb-3">
                   Your Items ({battle.player.items.length}/15)
                 </div>
-                <div className="space-y-2 max-h-64 overflow-y-auto">
+                <div className="space-y-2 max-h-64 overflow-y-auto pr-2 scrollbar-thin">
                   {battle.player.items.map((item) => (
                     <ItemHoverWrapper key={item.id} item={item}>
                       <ItemMiniCard item={item} />
@@ -199,7 +199,7 @@ export function BattlePhase() {
                 <div className="text-sm font-semibold text-red-400 mb-3">
                   Opponent Items ({battle.opponent.items.length}/15)
                 </div>
-                <div className="space-y-2 max-h-64 overflow-y-auto">
+                <div className="space-y-2 max-h-64 overflow-y-auto pr-2 scrollbar-thin">
                   {battle.opponent.items.map((item) => (
                     <ItemHoverWrapper key={item.id} item={item}>
                       <ItemMiniCard item={item} />
@@ -246,7 +246,7 @@ export function BattlePhase() {
               <div className="text-xs font-semibold text-green-400 mb-2">
                 Your Items ({battle.player.items.length}/15)
               </div>
-              <div className="space-y-2 max-h-96 overflow-y-auto">
+              <div className="space-y-2 max-h-96 overflow-y-auto pr-2 scrollbar-thin">
                 {battle.player.items.map((item) => (
                   <ItemHoverWrapper key={item.id} item={item}>
                     <ItemMiniCard item={item} />
@@ -320,9 +320,9 @@ export function BattlePhase() {
             {/* Battle Log */}
             <div
               ref={battleLogRef}
-              className="card bg-gray-800 p-4 max-h-[600px] overflow-y-auto scrollbar-thin scroll-smooth"
+              className="card bg-gray-800 p-4 pr-2 max-h-[600px] overflow-y-auto scrollbar-thin scroll-smooth"
             >
-              <div className="space-y-4">
+              <div className="space-y-4 pr-2">
                 {visibleTurns.map((turnEvents, turnIndex) => (
                   <TurnDisplay
                     key={turnIndex}
@@ -371,7 +371,7 @@ export function BattlePhase() {
               <div className="text-xs font-semibold text-red-400 mb-2">
                 Opponent Items ({battle.opponent.items.length}/15)
               </div>
-              <div className="space-y-2 max-h-96 overflow-y-auto">
+              <div className="space-y-2 max-h-96 overflow-y-auto pr-2 scrollbar-thin">
                 {battle.opponent.items.map((item) => (
                   <ItemHoverWrapper key={item.id} item={item}>
                     <ItemMiniCard item={item} />
@@ -490,8 +490,8 @@ function AttackDisplay({
   const baseBlock = blockDetails.find((d) => !d.itemName)?.blockAmount || 0;
   const itemBlockDetails = blockDetails.filter((d) => d.itemName);
 
-  // Calculate healing breakdown
-  const healDetails = attackEvent.details.filter((d) => d.healAmount !== undefined && d.healAmount > 0);
+  // Calculate healing breakdown (include 0 HP heals to show when at max HP)
+  const healDetails = attackEvent.details.filter((d) => d.healAmount !== undefined && d.healAmount >= 0);
   const totalHealing = healDetails.reduce((sum, d) => sum + (d.healAmount || 0), 0);
 
   // Get final damage
@@ -516,7 +516,7 @@ function AttackDisplay({
         </div>
       </div>
 
-      <div className={`grid ${totalHealing > 0 ? 'grid-cols-3' : 'grid-cols-2'} gap-3`}>
+      <div className={`grid ${healDetails.length > 0 ? 'grid-cols-3' : 'grid-cols-2'} gap-3`}>
         {/* Damage Section */}
         <div className="bg-red-900/10 border border-red-700/30 rounded p-2">
           <div className="text-red-400 font-semibold text-sm mb-1">⚔️ Attack: {totalRawDamage}</div>
@@ -574,15 +574,20 @@ function AttackDisplay({
           </div>
         </div>
 
-        {/* Healing Section - Only show if there's healing */}
-        {totalHealing > 0 && (
+        {/* Healing Section - Show if there are any heal attempts */}
+        {healDetails.length > 0 && (
           <div className="bg-green-900/10 border border-green-700/30 rounded p-2">
             <div className="text-green-400 font-semibold text-sm mb-1">💚 Healing: {totalHealing}</div>
             <div className="space-y-0.5 text-xs">
               {healDetails.map((detail, idx) => {
                 const item = findItemByEmoji(detail.itemEmoji || '', playerItems, opponentItems);
+                const isZeroHeal = detail.healAmount === 0;
+                const isPlayerHealing = detail.healer === 'player';
+                const healerPrefix = isPlayerHealing ? '👤' : '🤖';
+                const healerColor = isPlayerHealing ? 'text-green-400' : 'text-red-400';
                 return (
-                  <div key={idx} className="text-gray-300">
+                  <div key={idx} className={isZeroHeal ? 'text-gray-500' : 'text-gray-300'}>
+                    <span className={`${healerColor} text-[10px] mr-0.5`}>{healerPrefix}</span>
                     {item ? (
                       <ItemHoverWrapper item={item}>
                         <span className="cursor-help">{detail.itemEmoji}</span>
@@ -590,7 +595,9 @@ function AttackDisplay({
                     ) : (
                       <span>{detail.itemEmoji}</span>
                     )}{' '}
-                    <span className="text-green-300 font-semibold">+{detail.healAmount}</span>
+                    <span className={isZeroHeal ? 'text-gray-400 font-semibold' : 'text-green-300 font-semibold'}>
+                      +{detail.healAmount}
+                    </span>
                     {detail.effectDescription && (
                       <span className="text-gray-500 text-[10px] ml-1">({detail.effectDescription})</span>
                     )}
