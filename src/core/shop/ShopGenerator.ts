@@ -5,8 +5,16 @@ import { GAME_CONSTANTS } from '@utils/constants';
 export class ShopGenerator {
   /**
    * Generate a shop inventory of 9 items (3x3 grid)
+   * Excludes items that are already owned by the player
    */
-  static generateShop(availableItems: Item[], round: number): Item[] {
+  static generateShop(ownedItems: Item[], round: number): Item[] {
+    // Get all items from database
+    const allItems = ItemDatabase.getAllItems();
+
+    // Filter out items already owned
+    const ownedItemIds = new Set(ownedItems.map(item => item.id));
+    const availableItems = allItems.filter(item => !ownedItemIds.has(item.id));
+
     if (availableItems.length === 0) {
       return [];
     }
@@ -23,7 +31,7 @@ export class ShopGenerator {
 
       if (selectedItem) {
         shopItems.push(selectedItem);
-        // Remove from pool to avoid duplicates
+        // Remove from pool to avoid duplicates in the same shop
         const index = itemPool.findIndex((item) => item.id === selectedItem.id);
         if (index !== -1) {
           itemPool.splice(index, 1);

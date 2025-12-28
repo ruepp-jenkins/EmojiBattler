@@ -22,8 +22,8 @@ export interface GameState {
   player: Player;
   opponent?: Player;
   currentBattle?: BattleState;
-  shopInventory: Item[];
-  availableItems: Item[]; // Pool of items not yet bought this run
+  playerShopInventory: Item[]; // Player's shop (unique items, excludes owned items)
+  aiShopInventory: Item[]; // AI's shop (unique items, excludes AI's owned items)
   skillPoints: number;
   consecutiveWins: number; // Track wins for "every Nth battle" skill point rewards
   battleTimeline: BattleTimeline[];

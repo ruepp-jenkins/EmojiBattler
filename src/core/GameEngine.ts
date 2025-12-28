@@ -3,7 +3,6 @@ import { Player } from '@core/types/Player';
 import { Difficulty, DifficultyProgress } from '@core/types/Difficulty';
 import { Item } from '@core/types/Item';
 import { AppliedSkill } from '@core/types/Skills';
-import { ItemDatabase } from './items/ItemDatabase';
 import { BattleEngine } from './battle/BattleEngine';
 import { ShopGenerator } from './shop/ShopGenerator';
 import { AIShopStrategy } from './shop/AIShopStrategy';
@@ -32,19 +31,40 @@ export class GameEngine {
       player,
       opponent: undefined,
       currentBattle: undefined,
-      shopInventory: [],
-      availableItems: ItemDatabase.getAllItems(),
+      playerShopInventory: [],
+      aiShopInventory: [],
       skillPoints: 0,
       consecutiveWins: 0,
       battleTimeline: [],
       gameStartTime: Date.now(),
     };
 
-    // Generate first shop
-    gameState.shopInventory = ShopGenerator.generateShop(gameState.availableItems, 1);
-
     // Create AI opponent
     gameState.opponent = this.createAIOpponent(difficulty, permanentSkills);
+
+    // Generate separate shops for player and AI (excluding their owned items)
+    gameState.playerShopInventory = ShopGenerator.generateShop(player.items, 1);
+    gameState.aiShopInventory = ShopGenerator.generateShop(gameState.opponent.items, 1);
+
+    // AI makes initial purchases for round 1
+    if (gameState.opponent) {
+      const aiPurchases = AIShopStrategy.selectPurchases(
+        gameState.aiShopInventory,
+        gameState.opponent,
+        difficulty,
+        1
+      );
+
+      for (const item of aiPurchases) {
+        MoneyManager.purchaseItem(gameState.opponent, item);
+
+        // Remove from AI shop inventory
+        const shopIndex = gameState.aiShopInventory.findIndex((i) => i.id === item.id);
+        if (shopIndex !== -1) {
+          gameState.aiShopInventory.splice(shopIndex, 1);
+        }
+      }
+    }
 
     return gameState;
   }
@@ -136,15 +156,27 @@ export class GameEngine {
     // Update duration-based money items (like Lucky Charm)
     this.updateMoneyItemDurations(gameState.player);
 
-    // Award money to AI opponent
+    // Generate fresh shop for player (excludes player's owned items)
+    gameState.playerShopInventory = ShopGenerator.generateShop(
+      gameState.player.items,
+      gameState.currentRound
+    );
+
+    // Award money to AI opponent and generate AI shop
     if (gameState.opponent) {
       const aiMoneyEarned = GAME_CONSTANTS.MONEY_PER_ROUND +
         (gameState.difficulty?.aiMoneyBonus || 0);
       gameState.opponent.stats.money += aiMoneyEarned;
 
-      // AI makes purchases
+      // Generate fresh shop for AI (excludes AI's owned items)
+      gameState.aiShopInventory = ShopGenerator.generateShop(
+        gameState.opponent.items,
+        gameState.currentRound
+      );
+
+      // AI makes purchases from their shop
       const aiPurchases = AIShopStrategy.selectPurchases(
-        gameState.shopInventory,
+        gameState.aiShopInventory,
         gameState.opponent,
         gameState.difficulty!,
         gameState.currentRound
@@ -153,44 +185,27 @@ export class GameEngine {
       for (const item of aiPurchases) {
         MoneyManager.purchaseItem(gameState.opponent, item);
 
-        // Remove from available items
-        const index = gameState.availableItems.findIndex((i) => i.id === item.id);
+        // Remove from AI shop inventory
+        const index = gameState.aiShopInventory.findIndex((i) => i.id === item.id);
         if (index !== -1) {
-          gameState.availableItems.splice(index, 1);
+          gameState.aiShopInventory.splice(index, 1);
         }
       }
     }
-
-    // Return unsold shop items to available pool
-    for (const item of gameState.shopInventory) {
-      gameState.availableItems.push(item);
-    }
-
-    // Generate fresh shop for each round
-    gameState.shopInventory = ShopGenerator.generateShop(
-      gameState.availableItems,
-      gameState.currentRound
-    );
   }
 
   /**
-   * Purchase an item from the shop
+   * Purchase an item from the player's shop
    */
   static purchaseItem(gameState: GameState, item: Item): boolean {
     if (!MoneyManager.purchaseItem(gameState.player, item)) {
       return false;
     }
 
-    // Remove from shop inventory
-    const shopIndex = gameState.shopInventory.findIndex((i) => i.id === item.id);
+    // Remove from player shop inventory
+    const shopIndex = gameState.playerShopInventory.findIndex((i) => i.id === item.id);
     if (shopIndex !== -1) {
-      gameState.shopInventory.splice(shopIndex, 1);
-    }
-
-    // Remove from available items
-    const availableIndex = gameState.availableItems.findIndex((i) => i.id === item.id);
-    if (availableIndex !== -1) {
-      gameState.availableItems.splice(availableIndex, 1);
+      gameState.playerShopInventory.splice(shopIndex, 1);
     }
 
     return true;
@@ -204,11 +219,8 @@ export class GameEngine {
       return false;
     }
 
-    // Add back to shop inventory (optional feature)
-    gameState.shopInventory.push(item);
-
-    // Add back to available items
-    gameState.availableItems.push(item);
+    // Add back to player shop inventory
+    gameState.playerShopInventory.push(item);
 
     return true;
   }

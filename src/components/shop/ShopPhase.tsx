@@ -12,7 +12,7 @@ export function ShopPhase() {
 
   if (!gameState) return null;
 
-  const { player, shopInventory, currentRound, maxRounds } = gameState;
+  const { player, playerShopInventory, currentRound, maxRounds } = gameState;
 
   const handleBuyItem = (item: Item) => {
     if (player.items.length >= GAME_CONSTANTS.MAX_ITEMS) {
@@ -67,7 +67,7 @@ export function ShopPhase() {
           <div className="flex flex-col items-center">
             <h2 className="text-xl font-bold mb-4 self-start">Shop</h2>
             <div className="grid grid-cols-3 gap-4 w-full max-w-2xl">
-              {shopInventory.map((item) => (
+              {playerShopInventory.map((item) => (
                 <ItemHoverWrapper key={item.id} item={item} showPrice>
                   <ItemCard
                     item={item}
@@ -82,7 +82,7 @@ export function ShopPhase() {
               ))}
 
               {/* Fill empty slots */}
-              {Array.from({ length: Math.max(0, 9 - shopInventory.length) }).map((_, i) => (
+              {Array.from({ length: Math.max(0, 9 - playerShopInventory.length) }).map((_, i) => (
                 <div key={`empty-${i}`} className="card bg-gray-800 border-gray-700 h-32"></div>
               ))}
             </div>
