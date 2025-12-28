@@ -207,6 +207,20 @@ export class SaveManager {
       return false;
     }
 
+    // Ensure shop-related arrays exist (add defaults if missing for backward compatibility)
+    if (!Array.isArray(gs.playerShopInventory)) {
+      gs.playerShopInventory = [];
+    }
+    if (!Array.isArray(gs.aiShopInventory)) {
+      gs.aiShopInventory = [];
+    }
+    if (!Array.isArray(gs.purchasedShopItemIds)) {
+      gs.purchasedShopItemIds = [];
+    }
+    if (!Array.isArray(gs.soldItems)) {
+      gs.soldItems = [];
+    }
+
     return true;
   }
 

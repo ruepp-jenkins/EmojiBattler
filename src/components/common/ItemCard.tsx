@@ -19,7 +19,7 @@ export function ItemCard({ item, onClick, showPrice = false, disabled = false }:
 
   return (
     <div
-      className={`relative card ${bgClass} border-2 ${borderClass} p-3 cursor-pointer hover:scale-105 transition-transform ${
+      className={`relative card ${bgClass} border-2 ${borderClass} p-3 cursor-pointer hover:scale-105 transition-transform h-32 flex flex-col justify-center ${
         disabled ? 'opacity-50 cursor-not-allowed' : ''
       } ${isBroken ? 'opacity-60' : ''}`}
       onClick={disabled ? undefined : onClick}
