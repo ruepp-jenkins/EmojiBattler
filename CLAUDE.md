@@ -293,7 +293,7 @@ SHOP_SIZE: 9  // 3x3 grid
 
 ### 1. Verify Setup
 ```bash
-cd c:\Users\stefa\Documents\EmojyBattler
+cd EmojyBattler
 npm install
 npm run dev
 ```

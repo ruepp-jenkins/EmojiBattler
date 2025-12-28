@@ -257,7 +257,7 @@ Comprehensive documentation for development and continuation.
 
 ```bash
 # 1. Install dependencies
-cd c:\Users\stefa\Documents\EmojyBattler
+cd EmojyBattler
 npm install
 
 # 2. Start dev server

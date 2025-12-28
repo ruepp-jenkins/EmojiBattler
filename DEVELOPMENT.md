@@ -4,7 +4,7 @@
 
 ```bash
 # Navigate to project
-cd c:\Users\stefa\Documents\EmojyBattler
+cd EmojyBattler
 
 # Install dependencies
 npm install

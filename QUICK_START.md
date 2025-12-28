@@ -16,7 +16,7 @@ Just open that URL in your browser!
 
 ### Option 2: Start Fresh
 ```bash
-cd c:\Users\stefa\Documents\EmojyBattler
+cd EmojyBattler
 npm run dev
 ```
 

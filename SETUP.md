@@ -4,7 +4,7 @@
 
 ### Step 1: Install Dependencies
 ```bash
-cd c:\Users\stefa\Documents\EmojyBattler
+cd EmojyBattler
 npm install
 ```
 
