@@ -152,18 +152,24 @@ export class SaveManager {
 
   /**
    * Export save game to base64 encoded string (for copying)
+   * Uses Unicode-safe encoding to handle emojis and special characters
    */
   static exportToText(saveGame: SaveGame): string {
     const json = JSON.stringify(saveGame);
-    return btoa(json); // Base64 encode
+    // Convert to UTF-8 bytes then to base64 (Unicode-safe)
+    const utf8Bytes = encodeURIComponent(json);
+    return btoa(utf8Bytes);
   }
 
   /**
    * Import save game from base64 encoded string
+   * Uses Unicode-safe decoding to handle emojis and special characters
    */
   static importFromText(textString: string): SaveGame | null {
     try {
-      const json = atob(textString); // Base64 decode
+      // Decode base64 then convert from UTF-8 bytes (Unicode-safe)
+      const utf8Bytes = atob(textString);
+      const json = decodeURIComponent(utf8Bytes);
       const saveGame = JSON.parse(json) as SaveGame;
 
       if (!this.validateSave(saveGame)) {
@@ -280,7 +286,7 @@ export class SaveManager {
       reader.onload = (e) => {
         try {
           const content = e.target?.result as string;
-          const saveGame = this.importFromJSON(content);
+          const saveGame = this.importFromText(content);
           resolve(saveGame);
         } catch (error) {
           console.error('Failed to read save file:', error);

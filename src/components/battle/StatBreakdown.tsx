@@ -96,13 +96,6 @@ export function StatBreakdown({
         </div>
       )}
 
-      {/* Item Count */}
-      <div className="border-t border-gray-700 pt-3 mt-3">
-        <div className="text-xs text-gray-400">
-          Items: {player.items.length} / 15
-        </div>
-      </div>
-
       {/* Skills Display */}
       {player.skills && player.skills.length > 0 && (
         <div className="border-t border-gray-700 pt-3 mt-3">

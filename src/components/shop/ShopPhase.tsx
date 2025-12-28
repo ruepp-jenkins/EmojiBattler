@@ -94,7 +94,7 @@ export function ShopPhase() {
           <div className="flex flex-col items-center">
             <h2 className="text-xl font-bold mb-4 self-start">Shop</h2>
             <div className="grid grid-cols-3 gap-4 w-full max-w-2xl">
-              {playerShopInventory.map((item) => {
+              {[...playerShopInventory].sort((a, b) => b.price - a.price).map((item) => {
                 const isPurchased = purchasedShopItemIds.includes(item.id);
                 return isPurchased ? (
                   <div key={item.id} className="card bg-gray-800 border-gray-700 h-32"></div>
@@ -124,7 +124,7 @@ export function ShopPhase() {
               <div className="w-full max-w-2xl mt-6">
                 <h3 className="text-lg font-bold mb-3">Sold Items</h3>
                 <div className="grid grid-cols-3 gap-4">
-                  {soldItems.map((item, index) => (
+                  {[...soldItems].sort((a, b) => b.price - a.price).map((item, index) => (
                     <ItemHoverWrapper key={`${item.id}-sold-${index}`} item={item} showPrice>
                       <ItemCard
                         item={item}

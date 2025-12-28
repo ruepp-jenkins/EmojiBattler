@@ -5,12 +5,14 @@ import { Difficulty, DIFFICULTY_PRESETS, DifficultyLevel } from '@core/types/Dif
 import { Button } from '@components/common/Button';
 import { SkillsPanel } from '@components/menu/SkillsPanel';
 import { ItemCatalog } from '@components/menu/ItemCatalog';
+import { SaveLoadPanel } from '@components/menu/SaveLoadPanel';
 
 export function MainMenu() {
-  const { startNewGame, continueGame, persistentData, purchaseSkill } = useGame();
+  const { startNewGame, continueGame, persistentData, purchaseSkill, importSaveGame, getCurrentSaveGame } = useGame();
   const [showDifficultySelect, setShowDifficultySelect] = useState(false);
   const [showSkills, setShowSkills] = useState(false);
   const [showItemCatalog, setShowItemCatalog] = useState(false);
+  const [showSaveLoad, setShowSaveLoad] = useState(false);
 
   const hasSave = SaveManager.hasSave();
   const saveInfo = SaveManager.getSaveInfo();
@@ -89,6 +91,19 @@ export function MainMenu() {
     return <ItemCatalog onClose={() => setShowItemCatalog(false)} />;
   }
 
+  if (showSaveLoad) {
+    return (
+      <SaveLoadPanel
+        currentSaveGame={getCurrentSaveGame()}
+        onImportSave={(saveGame) => {
+          importSaveGame(saveGame);
+          setShowSaveLoad(false);
+        }}
+        onClose={() => setShowSaveLoad(false)}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center p-4">
       <div className="max-w-md w-full text-center">
@@ -117,6 +132,10 @@ export function MainMenu() {
 
           <Button variant="secondary" onClick={() => setShowItemCatalog(true)} className="w-full">
             Item Catalog
+          </Button>
+
+          <Button variant="secondary" onClick={() => setShowSaveLoad(true)} className="w-full">
+            💾 Import/Export Save
           </Button>
 
           <div className="mt-8 text-sm text-gray-500">

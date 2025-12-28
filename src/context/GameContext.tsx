@@ -22,6 +22,8 @@ interface GameContextType {
   loadGame: () => void;
   returnToMenu: () => void;
   purchaseSkill: (skillId: string) => boolean;
+  importSaveGame: (saveGame: import('@core/types/GameState').SaveGame) => void;
+  getCurrentSaveGame: () => import('@core/types/GameState').SaveGame | null;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -168,6 +170,33 @@ export function GameProvider({ children }: { children: ReactNode }) {
     return false;
   };
 
+  const importSaveGame = (saveGame: import('@core/types/GameState').SaveGame) => {
+    setGameState(saveGame.gameState);
+    setPersistentData({
+      difficultyProgress: saveGame.difficultyProgress,
+      totalSkillPoints: saveGame.totalSkillPoints,
+      permanentSkills: saveGame.permanentSkills,
+    });
+    SaveManager.saveToLocalStorage(saveGame.gameState, {
+      difficultyProgress: saveGame.difficultyProgress,
+      totalSkillPoints: saveGame.totalSkillPoints,
+      permanentSkills: saveGame.permanentSkills,
+    });
+  };
+
+  const getCurrentSaveGame = (): import('@core/types/GameState').SaveGame | null => {
+    if (!gameState) return null;
+
+    return {
+      version: '1.0.0',
+      gameState,
+      difficultyProgress: persistentData.difficultyProgress,
+      totalSkillPoints: persistentData.totalSkillPoints,
+      permanentSkills: persistentData.permanentSkills,
+      timestamp: Date.now(),
+    };
+  };
+
   return (
     <GameContext.Provider
       value={{
@@ -184,6 +213,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
         loadGame,
         returnToMenu,
         purchaseSkill,
+        importSaveGame,
+        getCurrentSaveGame,
       }}
     >
       {children}

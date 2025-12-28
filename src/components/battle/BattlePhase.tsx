@@ -155,7 +155,9 @@ export function BattlePhase() {
 
               {/* Player Items */}
               <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
-                <div className="text-sm font-semibold text-green-400 mb-3">Your Items</div>
+                <div className="text-sm font-semibold text-green-400 mb-3">
+                  Your Items ({battle.player.items.length}/15)
+                </div>
                 <div className="space-y-2 max-h-64 overflow-y-auto">
                   {battle.player.items.map((item) => (
                     <ItemHoverWrapper key={item.id} item={item}>
@@ -194,7 +196,9 @@ export function BattlePhase() {
 
               {/* Opponent Items */}
               <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
-                <div className="text-sm font-semibold text-red-400 mb-3">Opponent Items</div>
+                <div className="text-sm font-semibold text-red-400 mb-3">
+                  Opponent Items ({battle.opponent.items.length}/15)
+                </div>
                 <div className="space-y-2 max-h-64 overflow-y-auto">
                   {battle.opponent.items.map((item) => (
                     <ItemHoverWrapper key={item.id} item={item}>
@@ -239,7 +243,9 @@ export function BattlePhase() {
 
             {/* Player Items */}
             <div className="bg-gray-800 rounded-lg p-3 border border-gray-700">
-              <div className="text-xs font-semibold text-green-400 mb-2">Your Items</div>
+              <div className="text-xs font-semibold text-green-400 mb-2">
+                Your Items ({battle.player.items.length}/15)
+              </div>
               <div className="space-y-2 max-h-96 overflow-y-auto">
                 {battle.player.items.map((item) => (
                   <ItemHoverWrapper key={item.id} item={item}>
@@ -362,7 +368,9 @@ export function BattlePhase() {
 
             {/* Opponent Items */}
             <div className="bg-gray-800 rounded-lg p-3 border border-gray-700">
-              <div className="text-xs font-semibold text-red-400 mb-2">Opponent Items</div>
+              <div className="text-xs font-semibold text-red-400 mb-2">
+                Opponent Items ({battle.opponent.items.length}/15)
+              </div>
               <div className="space-y-2 max-h-96 overflow-y-auto">
                 {battle.opponent.items.map((item) => (
                   <ItemHoverWrapper key={item.id} item={item}>
