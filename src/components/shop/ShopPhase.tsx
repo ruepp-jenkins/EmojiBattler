@@ -1,4 +1,5 @@
 import { useGame } from '@context/GameContext';
+import { useItemTooltip } from '@context/ItemTooltipContext';
 import { Item } from '@core/types/Item';
 import { Player } from '@core/types/Player';
 import { ItemCard } from '@components/common/ItemCard';
@@ -9,6 +10,7 @@ import { GAME_CONSTANTS } from '@utils/constants';
 
 export function ShopPhase() {
   const { gameState, purchaseItem, sellItem, startBattle } = useGame();
+  const { hideTooltip } = useItemTooltip();
 
   if (!gameState) return null;
 
@@ -25,6 +27,7 @@ export function ShopPhase() {
       return;
     }
 
+    hideTooltip();
     purchaseItem(item);
   };
 
@@ -34,6 +37,7 @@ export function ShopPhase() {
       return;
     }
 
+    hideTooltip();
     sellItem(item);
   };
 
@@ -47,6 +51,8 @@ export function ShopPhase() {
       alert('Not enough money!');
       return;
     }
+
+    hideTooltip();
 
     // Buy back the sold item
     purchaseItem(item);
