@@ -1299,9 +1299,9 @@ const CORE_ITEMS: Omit<Item, 'price' | 'canSell'>[] = [
     baseDefense: 20,
     effects: [
       {
-        trigger: EffectTrigger.OnBattleStart,
+        trigger: EffectTrigger.OnAttack,
         effectType: 'heal',
-        value: 30,
+        value: 4,
       },
     ],
     description: 'Majestic! Balanced stats with healing.',
