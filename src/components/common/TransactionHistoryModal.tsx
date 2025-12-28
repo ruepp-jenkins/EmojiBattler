@@ -1,4 +1,3 @@
-import { Item } from '@core/types/Item';
 import { ShopTransaction } from '@core/types/GameState';
 import { Player } from '@core/types/Player';
 import { formatMoney } from '@utils/formatting';
