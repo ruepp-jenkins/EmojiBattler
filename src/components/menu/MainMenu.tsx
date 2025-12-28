@@ -4,11 +4,13 @@ import { SaveManager } from '@core/save/SaveManager';
 import { Difficulty, DIFFICULTY_PRESETS, DifficultyLevel } from '@core/types/Difficulty';
 import { Button } from '@components/common/Button';
 import { SkillsPanel } from '@components/menu/SkillsPanel';
+import { ItemCatalog } from '@components/menu/ItemCatalog';
 
 export function MainMenu() {
   const { startNewGame, continueGame, persistentData, purchaseSkill } = useGame();
   const [showDifficultySelect, setShowDifficultySelect] = useState(false);
   const [showSkills, setShowSkills] = useState(false);
+  const [showItemCatalog, setShowItemCatalog] = useState(false);
 
   const hasSave = SaveManager.hasSave();
   const saveInfo = SaveManager.getSaveInfo();
@@ -83,6 +85,10 @@ export function MainMenu() {
     );
   }
 
+  if (showItemCatalog) {
+    return <ItemCatalog onClose={() => setShowItemCatalog(false)} />;
+  }
+
   return (
     <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center p-4">
       <div className="max-w-md w-full text-center">
@@ -107,6 +113,10 @@ export function MainMenu() {
 
           <Button variant="secondary" onClick={() => setShowSkills(true)} className="w-full">
             Skills ({persistentData.totalSkillPoints} points)
+          </Button>
+
+          <Button variant="secondary" onClick={() => setShowItemCatalog(true)} className="w-full">
+            Item Catalog
           </Button>
 
           <div className="mt-8 text-sm text-gray-500">

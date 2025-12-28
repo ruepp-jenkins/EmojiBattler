@@ -50,22 +50,7 @@ export class GameEngine {
 
     // AI makes initial purchases for round 1
     if (gameState.opponent) {
-      const aiPurchases = AIShopStrategy.selectPurchases(
-        gameState.aiShopInventory,
-        gameState.opponent,
-        difficulty,
-        1
-      );
-
-      for (const item of aiPurchases) {
-        MoneyManager.purchaseItem(gameState.opponent, item);
-
-        // Remove from AI shop inventory
-        const shopIndex = gameState.aiShopInventory.findIndex((i) => i.id === item.id);
-        if (shopIndex !== -1) {
-          gameState.aiShopInventory.splice(shopIndex, 1);
-        }
-      }
+      this.performAIShopping(gameState, difficulty, 1);
     }
 
     return gameState;
@@ -142,6 +127,106 @@ export class GameEngine {
   }
 
   /**
+   * Handle AI shopping with buy and sell logic
+   */
+  private static performAIShopping(
+    gameState: GameState,
+    difficulty: Difficulty,
+    round: number
+  ): void {
+    if (!gameState.opponent) return;
+
+    const aiPlayer = gameState.opponent;
+    const shop = gameState.aiShopInventory;
+
+    // Get desired purchases
+    const aiPurchases = AIShopStrategy.selectPurchases(
+      shop,
+      aiPlayer,
+      difficulty,
+      round
+    );
+
+    for (const itemToBuy of aiPurchases) {
+      // Check if AI is at max capacity
+      if (aiPlayer.items.length >= GAME_CONSTANTS.MAX_ITEMS) {
+        // Find worst item to potentially sell
+        let worstItem: Item | null = null;
+        let worstScore = Infinity;
+
+        // Score all sellable items and find the worst one
+        for (const ownedItem of aiPlayer.items) {
+          // Skip items that can't be sold
+          if (!ownedItem.canSell) continue;
+
+          const score = this.scoreAIItem(ownedItem, aiPlayer, difficulty, round);
+          if (score < worstScore) {
+            worstScore = score;
+            worstItem = ownedItem;
+          }
+        }
+
+        // Check if we should sell the worst item for the new one
+        if (worstItem && AIShopStrategy.shouldSellItem(worstItem, itemToBuy, aiPlayer, difficulty, round)) {
+          MoneyManager.sellItem(aiPlayer, worstItem);
+          this.updatePlayerMaxHP(aiPlayer);
+        } else {
+          // Can't or shouldn't sell anything, skip this purchase
+          continue;
+        }
+      }
+
+      // Purchase the item
+      if (MoneyManager.purchaseItem(aiPlayer, itemToBuy)) {
+        this.updatePlayerMaxHP(aiPlayer);
+
+        // Remove from AI shop inventory
+        const index = shop.findIndex((i) => i.id === itemToBuy.id);
+        if (index !== -1) {
+          shop.splice(index, 1);
+        }
+      }
+    }
+  }
+
+  /**
+   * Score an item for AI decision making (wrapper for AIShopStrategy)
+   */
+  private static scoreAIItem(
+    item: Item,
+    _aiPlayer: Player,
+    _difficulty: Difficulty,
+    _round: number
+  ): number {
+    // Use reflection to access private method, or duplicate scoring logic
+    // For simplicity, we'll use a basic scoring
+    let score = item.baseAttack * 3 + item.baseDefense * 2.5;
+
+    for (const effect of item.effects) {
+      switch (effect.effectType) {
+        case 'damage':
+          score += effect.value * 4;
+          break;
+        case 'block':
+          score += effect.value * 3.5;
+          break;
+        case 'heal':
+          score += effect.value * 5;
+          break;
+        case 'vampire':
+          score += effect.value * 100;
+          break;
+        case 'attackMultiply':
+        case 'defenseMultiply':
+          score += effect.value * 150;
+          break;
+      }
+    }
+
+    return score;
+  }
+
+  /**
    * Start the shop phase
    */
   static startShopPhase(gameState: GameState): void {
@@ -180,23 +265,8 @@ export class GameEngine {
         gameState.currentRound
       );
 
-      // AI makes purchases from their shop
-      const aiPurchases = AIShopStrategy.selectPurchases(
-        gameState.aiShopInventory,
-        gameState.opponent,
-        gameState.difficulty!,
-        gameState.currentRound
-      );
-
-      for (const item of aiPurchases) {
-        MoneyManager.purchaseItem(gameState.opponent, item);
-
-        // Remove from AI shop inventory
-        const index = gameState.aiShopInventory.findIndex((i) => i.id === item.id);
-        if (index !== -1) {
-          gameState.aiShopInventory.splice(index, 1);
-        }
-      }
+      // AI makes purchases (and sells if at max capacity)
+      this.performAIShopping(gameState, gameState.difficulty!, gameState.currentRound);
     }
   }
 

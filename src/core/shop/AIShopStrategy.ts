@@ -298,11 +298,6 @@ export class AIShopStrategy {
     difficulty: Difficulty,
     round: number
   ): boolean {
-    // Only optimal AI considers selling
-    if (difficulty.aiOptimalPlayPercent < 0.9) {
-      return false;
-    }
-
     // Don't sell breakable items that can't be sold
     if (!itemToSell.canSell) {
       return false;
@@ -312,10 +307,20 @@ export class AIShopStrategy {
     const sellScore = this.scoreItem(itemToSell, aiPlayer, difficulty, round);
     const buyScore = this.scoreItem(itemToBuy, aiPlayer, difficulty, round);
 
-    // Consider price difference
-    const priceDiff = itemToBuy.price - itemToSell.price;
+    // Calculate if AI can afford the swap (current money + sell value >= buy price)
+    const sellValue = Math.floor(itemToSell.price / 2);
+    const canAfford = aiPlayer.stats.money + sellValue >= itemToBuy.price;
 
-    // Buy if new item is significantly better and price difference is acceptable
-    return buyScore > sellScore * 1.3 && aiPlayer.stats.money >= priceDiff;
+    if (!canAfford) {
+      return false;
+    }
+
+    // AI difficulty affects how good the new item needs to be
+    // Lower difficulty = needs much better item (1.5x)
+    // Higher difficulty = needs slightly better item (1.1x)
+    const improvementThreshold = 1.5 - (difficulty.aiOptimalPlayPercent * 0.4);
+
+    // Buy if new item is better enough for this difficulty level
+    return buyScore > sellScore * improvementThreshold;
   }
 }
