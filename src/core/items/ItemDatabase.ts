@@ -230,12 +230,12 @@ const CORE_ITEMS: Omit<Item, 'price' | 'canSell'>[] = [
     baseDefense: 0,
     effects: [
       {
-        trigger: EffectTrigger.OnBattleStart,
+        trigger: EffectTrigger.OnAttack,
         effectType: 'heal',
-        value: 25,
+        value: 4,
       },
     ],
-    description: 'Heals 25 HP at the start of battle.',
+    description: 'Heals 4 HP with each attack.',
   },
   {
     id: 'clover',
