@@ -20,13 +20,12 @@ export function StatBreakdown({
   const stats = DamageCalculator.calculatePlayerStats(player);
 
   const labelColor = isOpponent ? 'text-red-400' : 'text-green-400';
-  const accentColor = isOpponent ? 'text-red-300' : 'text-green-300';
 
   return (
     <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
       {/* Header */}
       <div className={`text-lg font-bold mb-3 ${labelColor}`}>
-        {isOpponent ? `${player.name} (AI)` : player.name}
+        {isOpponent ? 'Opponent (AI)' : 'You'}
       </div>
 
       {/* HP Display */}
@@ -54,7 +53,7 @@ export function StatBreakdown({
         <div className="text-sm font-semibold text-red-400 mb-1">Attack</div>
         <div className="text-xl font-bold">{stats.totalAttack}</div>
         <div className="text-xs text-gray-400">
-          Base: {player.stats.attack} + Items: {stats.breakdown.items.attack}
+          Base: {player.stats.baseAttack} + Items: {stats.breakdown.items.attack}
           {stats.attackMultiplier > 0 && ` × ${(1 + stats.attackMultiplier).toFixed(2)}`}
         </div>
       </div>
@@ -62,14 +61,20 @@ export function StatBreakdown({
       {/* Defense Stats */}
       <div className="mb-3">
         <div className="text-sm font-semibold text-blue-400 mb-1">Defense</div>
-        <div className="text-xl font-bold">{stats.totalDefense} ({Math.round(stats.defensePercent * 100)}%)</div>
+        <div className="text-xl font-bold">{stats.totalDefense} points</div>
+        <div className="text-lg font-semibold text-blue-300">
+          = {Math.round(stats.defensePercent * 100)}% damage reduction
+        </div>
         <div className="text-xs text-gray-400">
-          Base: {player.stats.defense} + Items: {stats.breakdown.items.defense}
+          Base: {player.stats.baseDefense} + Items: {stats.breakdown.items.defense}
           {stats.defenseMultiplier > 0 && ` × ${(1 + stats.defenseMultiplier).toFixed(2)}`}
         </div>
         {stats.defensePercent >= 0.9 && (
           <div className="text-xs text-yellow-400 mt-1">⚠️ Capped at 90%</div>
         )}
+        <div className="text-xs text-gray-500 mt-1 italic">
+          Blocks {Math.round(stats.defensePercent * 100)}% of incoming damage
+        </div>
       </div>
 
       {/* Multipliers */}
@@ -102,7 +107,7 @@ export function StatBreakdown({
           <div className="text-sm font-semibold text-purple-400 mb-2">Skills</div>
           {player.skills.map((skill, idx) => (
             <div key={idx} className="text-xs text-gray-300">
-              • {skill.name} (Lv. {skill.level})
+              • {skill.skillId} (Lv. {skill.level})
             </div>
           ))}
         </div>

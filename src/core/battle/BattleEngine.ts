@@ -36,57 +36,60 @@ export class BattleEngine {
     // Apply OnBattleStart effects
     this.applyBattleStartEffects(battle);
 
-    // Main battle loop
+    // Main battle loop - each attack is a separate turn
     while (battle.turn < GAME_CONSTANTS.MAX_BATTLE_TURNS && !battle.isComplete) {
-      // Turn start
-      if (battle.turn % 2 === 0) {
-        battle.events.push(BattleLogger.createTurnStartEvent(battle.turn));
-      }
+      const isPlayerTurn = battle.turn % 2 === 0; // Even turns = player, odd turns = opponent
+
+      // Turn start event
+      battle.events.push(BattleLogger.createTurnStartEvent(battle.turn));
 
       // Apply OnTurnStart effects
       this.applyTurnStartEffects(battle);
 
-      // Player attacks first
-      if (battlePlayer.stats.currentHP > 0) {
-        this.executeAttack(battle, battlePlayer, battleOpponent, 'player');
-      }
+      // Execute attack based on whose turn it is
+      if (isPlayerTurn) {
+        // Player's turn
+        if (battlePlayer.stats.currentHP > 0) {
+          this.executeAttack(battle, battlePlayer, battleOpponent, 'player');
+        }
 
-      // Check if opponent is defeated
-      if (battleOpponent.stats.currentHP <= 0) {
-        battle.isComplete = true;
-        battle.winner = 'player';
-        break;
-      }
+        // Check if opponent is defeated
+        if (battleOpponent.stats.currentHP <= 0) {
+          battle.isComplete = true;
+          battle.winner = 'player';
+          break;
+        }
+      } else {
+        // Opponent's turn
+        if (battleOpponent.stats.currentHP > 0) {
+          this.executeAttack(battle, battleOpponent, battlePlayer, 'opponent');
+        }
 
-      // Opponent attacks
-      if (battleOpponent.stats.currentHP > 0) {
-        this.executeAttack(battle, battleOpponent, battlePlayer, 'opponent');
-      }
-
-      // Check if player is defeated
-      if (battlePlayer.stats.currentHP <= 0) {
-        battle.isComplete = true;
-        battle.winner = 'opponent';
-        break;
+        // Check if player is defeated
+        if (battlePlayer.stats.currentHP <= 0) {
+          battle.isComplete = true;
+          battle.winner = 'opponent';
+          break;
+        }
       }
 
       // Apply OnTurnEnd effects
       this.applyTurnEndEffects(battle);
 
-      // Check for speed increase
-      if ((battle.turn + 1) % GAME_CONSTANTS.SPEED_INCREASE_INTERVAL === 0) {
+      // Check for speed increase (every 10 turns now since each attack is a turn)
+      if ((battle.turn + 1) % (GAME_CONSTANTS.SPEED_INCREASE_INTERVAL * 2) === 0) {
         battle.speedMultiplier = DamageCalculator.calculateSpeedMultiplier(battle.turn + 1);
         battle.events.push(
           BattleLogger.createSpeedIncreaseEvent(battle.turn, 'player', battle.speedMultiplier)
         );
       }
 
-      // Check for damage multiplier increase
+      // Check for damage multiplier increase (every 4 turns now)
       if (
-        battle.turn >= GAME_CONSTANTS.DAMAGE_MULTIPLIER_START &&
-        (battle.turn - GAME_CONSTANTS.DAMAGE_MULTIPLIER_START) % 2 === 0
+        battle.turn >= GAME_CONSTANTS.DAMAGE_MULTIPLIER_START * 2 &&
+        (battle.turn - GAME_CONSTANTS.DAMAGE_MULTIPLIER_START * 2) % 4 === 0
       ) {
-        const newMultiplier = DamageCalculator.calculateDamageMultiplier(battle.turn);
+        const newMultiplier = DamageCalculator.calculateDamageMultiplier(battle.turn / 2);
         if (newMultiplier > battle.damageMultiplier) {
           battle.damageMultiplier = newMultiplier;
           battle.events.push(

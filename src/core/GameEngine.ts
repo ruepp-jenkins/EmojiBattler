@@ -233,8 +233,8 @@ export class GameEngine {
       gameState.currentRound
     );
 
-    // Auto-transition to summary
-    gameState.phase = 'summary';
+    // Keep phase as 'battle' - let BattlePhase component control the transition
+    // BattlePhase will show the battle UI and call endRound when user clicks Continue
   }
 
   /**

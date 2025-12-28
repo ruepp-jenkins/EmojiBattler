@@ -16,6 +16,7 @@ interface GameContextType {
   purchaseItem: (item: Item) => boolean;
   sellItem: (item: Item) => boolean;
   startBattle: () => void;
+  transitionToSummary: () => void;
   endRound: () => void;
   saveGame: () => void;
   loadGame: () => void;
@@ -95,6 +96,13 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setGameState({ ...gameState });
   };
 
+  const transitionToSummary = () => {
+    if (!gameState) return;
+
+    gameState.phase = 'summary';
+    setGameState({ ...gameState });
+  };
+
   const endRound = () => {
     if (!gameState) return;
 
@@ -170,6 +178,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         purchaseItem,
         sellItem,
         startBattle,
+        transitionToSummary,
         endRound,
         saveGame,
         loadGame,

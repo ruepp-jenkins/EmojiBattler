@@ -56,4 +56,15 @@
     background-color: #4B5563;
     border-radius: 4px;
   }
+
+  @keyframes float-up {
+    0% {
+      transform: translate(-50%, 0);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(-50%, -60px);
+      opacity: 0;
+    }
+  }
 }

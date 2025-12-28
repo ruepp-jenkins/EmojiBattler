@@ -1,4 +1,6 @@
 import { GameProvider, useGame } from '@context/GameContext';
+import { ItemTooltipProvider } from '@context/ItemTooltipContext';
+import { ItemTooltipDisplay } from '@components/common/ItemTooltipDisplay';
 import { MainMenu } from '@components/menu/MainMenu';
 import { ShopPhase } from '@components/shop/ShopPhase';
 import { BattlePhase } from '@components/battle/BattlePhase';
@@ -32,9 +34,12 @@ function GameRouter() {
 
 function App() {
   return (
-    <GameProvider>
-      <GameRouter />
-    </GameProvider>
+    <ItemTooltipProvider>
+      <GameProvider>
+        <GameRouter />
+      </GameProvider>
+      <ItemTooltipDisplay />
+    </ItemTooltipProvider>
   );
 }
 
