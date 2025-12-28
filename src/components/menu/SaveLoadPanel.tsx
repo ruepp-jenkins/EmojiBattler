@@ -50,7 +50,7 @@ export function SaveLoadPanel({ currentSaveGame, onImportSave, onClose }: SaveLo
     }
 
     const timestamp = new Date().toISOString().replace(/:/g, '-').split('.')[0];
-    const filename = `save-${timestamp}.emojybattler`;
+    const filename = `save-${timestamp}.emojibattler`;
 
     // Export as text (same format as "Generate Text Code")
     const text = SaveManager.exportToText(availableSave);
@@ -178,7 +178,7 @@ export function SaveLoadPanel({ currentSaveGame, onImportSave, onClose }: SaveLo
                     className="w-full"
                     disabled={!availableSave}
                   >
-                    📁 Download as File (.emojybattler)
+                    📁 Download as File (.emojibattler)
                   </Button>
                   <p className="text-xs text-gray-500 mt-1">
                     Best for long-term backup and easy sharing
@@ -259,7 +259,7 @@ export function SaveLoadPanel({ currentSaveGame, onImportSave, onClose }: SaveLo
                   <input
                     ref={fileInputRef}
                     type="file"
-                    accept=".emojybattler"
+                    accept=".emojibattler"
                     onChange={handleImportFromFile}
                     className="hidden"
                   />
@@ -268,7 +268,7 @@ export function SaveLoadPanel({ currentSaveGame, onImportSave, onClose }: SaveLo
                     onClick={handleSelectFile}
                     className="w-full"
                   >
-                    📁 Upload File (.emojybattler)
+                    📁 Upload File (.emojibattler)
                   </Button>
                   <p className="text-xs text-gray-500 mt-1">
                     Select a previously downloaded save file

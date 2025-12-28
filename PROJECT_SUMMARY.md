@@ -1,4 +1,4 @@
-# EmojyBattler - Project Summary
+# EmojiBattler - Project Summary
 
 ## 🎉 Project Status: **PLAYABLE** (90% Complete)
 
@@ -257,7 +257,7 @@ Comprehensive documentation for development and continuation.
 
 ```bash
 # 1. Install dependencies
-cd EmojyBattler
+cd EmojiBattler
 npm install
 
 # 2. Start dev server

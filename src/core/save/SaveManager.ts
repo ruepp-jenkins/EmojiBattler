@@ -262,7 +262,7 @@ export class SaveManager {
   /**
    * Download save game as file
    */
-  static downloadSaveFile(saveGame: SaveGame, filename: string = 'emojybattler-save.json'): void {
+  static downloadSaveFile(saveGame: SaveGame, filename: string = 'emojibattler-save.json'): void {
     const json = this.exportToJSON(saveGame);
     const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);

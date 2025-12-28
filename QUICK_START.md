@@ -1,4 +1,4 @@
-# 🎮 EmojyBattler - Quick Start Guide
+# 🎮 EmojiBattler - Quick Start Guide
 
 ## ✅ Project is READY TO PLAY!
 
@@ -16,7 +16,7 @@ Just open that URL in your browser!
 
 ### Option 2: Start Fresh
 ```bash
-cd EmojyBattler
+cd EmojiBattler
 npm run dev
 ```
 

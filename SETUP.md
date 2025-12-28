@@ -1,10 +1,10 @@
-# EmojyBattler - Setup & Installation Guide
+# EmojiBattler - Setup & Installation Guide
 
 ## 🎮 Quick Start (5 minutes)
 
 ### Step 1: Install Dependencies
 ```bash
-cd EmojyBattler
+cd EmojiBattler
 npm install
 ```
 
@@ -32,7 +32,7 @@ You should see:
 ### Step 3: Open in Browser
 Open [http://localhost:5173/](http://localhost:5173/) in your browser.
 
-You should see the **EmojyBattler Main Menu**! 🎉
+You should see the **EmojiBattler Main Menu**! 🎉
 
 ---
 
@@ -129,7 +129,7 @@ npm run lint
 ## 📁 Project Structure
 
 ```
-EmojyBattler/
+EmojiBattler/
 ├── src/
 │   ├── core/              # ✅ Game logic (100% complete)
 │   │   ├── battle/        # Battle system
@@ -343,6 +343,6 @@ vercel
 
 ---
 
-**Have fun playing EmojyBattler!** ⚔️🎮
+**Have fun playing EmojiBattler!** ⚔️🎮
 
 Created with React, TypeScript, and Vite.

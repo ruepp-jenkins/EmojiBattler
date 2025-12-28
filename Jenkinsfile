@@ -1,8 +1,8 @@
 properties(
     [
         githubProjectProperty(
-            displayName: 'docker-emojybattler',
-            projectUrlStr: 'https://github.com/ruepp-jenkins/emojybattler/'
+            displayName: 'docker-emojibattler',
+            projectUrlStr: 'https://github.com/ruepp-jenkins/emojibattler/'
         ),
         disableConcurrentBuilds(abortPrevious: true)
     ]
@@ -14,7 +14,7 @@ pipeline {
     }
 
     environment {
-        IMAGE_FULLNAME = 'ruepp/emojybattler'
+        IMAGE_FULLNAME = 'ruepp/emojibattler'
         DOCKER_API_PASSWORD = credentials('DOCKER_API_PASSWORD')
         TRIVY_TOKEN = credentials('TRIVY_TOKEN')
         DEPENDENCYTRACK_HOST = 'http://172.20.89.2:8080'

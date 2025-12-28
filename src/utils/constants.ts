@@ -52,6 +52,6 @@ export const GAME_CONSTANTS = {
 } as const;
 
 export const LOCAL_STORAGE_KEYS = {
-  SAVE_GAME: 'emojy-battler-save',
-  PERSISTENT_DATA: 'emojy-battler-persistent',
+  SAVE_GAME: 'emoji-battler-save',
+  PERSISTENT_DATA: 'emoji-battler-persistent',
 } as const;

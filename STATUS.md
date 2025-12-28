@@ -1,4 +1,4 @@
-# EmojyBattler - Development Status
+# EmojiBattler - Development Status
 
 **Last Updated**: 2025-12-27
 **Overall Progress**: 95% Complete (GAME IS FULLY PLAYABLE WITH ENHANCED UI!)

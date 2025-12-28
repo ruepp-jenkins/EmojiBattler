@@ -1,6 +1,6 @@
 # Claude Development Notes
 
-## Project: EmojyBattler - TypeScript Auto-Battler Game
+## Project: EmojiBattler - TypeScript Auto-Battler Game
 
 ### Last Updated
 2025-01-XX (Update this date when resuming)
@@ -293,7 +293,7 @@ SHOP_SIZE: 9  // 3x3 grid
 
 ### 1. Verify Setup
 ```bash
-cd EmojyBattler
+cd EmojiBattler
 npm install
 npm run dev
 ```

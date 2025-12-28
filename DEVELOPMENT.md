@@ -1,10 +1,10 @@
-# EmojyBattler - Development Guide
+# EmojiBattler - Development Guide
 
 ## Quick Start
 
 ```bash
 # Navigate to project
-cd EmojyBattler
+cd EmojiBattler
 
 # Install dependencies
 npm install
@@ -24,7 +24,7 @@ npm run build
 ## Project Structure
 
 ```
-EmojyBattler/
+EmojiBattler/
 ├── src/
 │   ├── core/                   # ✅ COMPLETE - Pure game logic
 │   │   ├── types/              # TypeScript interfaces

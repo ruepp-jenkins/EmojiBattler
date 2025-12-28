@@ -1,4 +1,4 @@
-# EmojyBattler ⚔️
+# EmojiBattler ⚔️
 
 A TypeScript-based auto-battler game where players collect emoji items, battle AI opponents, and progress through increasing difficulties.
 

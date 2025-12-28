@@ -1,7 +1,7 @@
 services:
-  emojybattler:
-    image: ruepp/emojybattler:latest
-    container_name: emojybattler
+  emojibattler:
+    image: ruepp/emojibattler:latest
+    container_name: emojibattler
     ports:
       - "3000:80"
     restart: unless-stopped
