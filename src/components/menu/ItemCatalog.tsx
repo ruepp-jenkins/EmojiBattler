@@ -1,9 +1,11 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { ItemDatabase } from '@core/items/ItemDatabase';
 import { Item, ItemType, ItemRarity } from '@core/types/Item';
 import { Button } from '@components/common/Button';
 import { ItemCard } from '@components/common/ItemCard';
 import { ItemHoverWrapper } from '@components/common/ItemHoverWrapper';
+import { FilterBuilder } from './FilterBuilder';
+import { applyFilters, ItemFilter, FilterLogic } from './ItemFilter';
 
 interface ItemCatalogProps {
   onClose: () => void;
@@ -23,8 +25,16 @@ const TYPE_LABELS: Record<ItemType, string> = {
 };
 
 export function ItemCatalog({ onClose }: ItemCatalogProps) {
+  const [filters, setFilters] = useState<ItemFilter[]>([]);
+  const [filterLogic, setFilterLogic] = useState<FilterLogic>('AND');
+
   const groupedItems = useMemo(() => {
-    const allItems = ItemDatabase.getAllItems();
+    let allItems = ItemDatabase.getAllItems();
+
+    // Apply filters
+    if (filters.length > 0) {
+      allItems = applyFilters(allItems, { filters, logic: filterLogic });
+    }
 
     // Group by type
     const byType: Record<ItemType, Item[]> = {
@@ -48,9 +58,10 @@ export function ItemCatalog({ onClose }: ItemCatalogProps) {
     });
 
     return byType;
-  }, []);
+  }, [filters, filterLogic]);
 
   const totalItems = Object.values(groupedItems).reduce((sum, items) => sum + items.length, 0);
+  const allItemsCount = ItemDatabase.getAllItems().length;
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-4">
@@ -58,12 +69,23 @@ export function ItemCatalog({ onClose }: ItemCatalogProps) {
         <div className="mb-6 flex justify-between items-center">
           <div>
             <h1 className="text-4xl font-bold mb-2">Item Catalog</h1>
-            <p className="text-gray-400">{totalItems} unique items available in the game</p>
+            <p className="text-gray-400">
+              Showing {totalItems} of {allItemsCount} items
+              {filters.length > 0 && <span className="text-yellow-400 ml-2">(filtered)</span>}
+            </p>
           </div>
           <Button variant="secondary" onClick={onClose}>
             Back to Menu
           </Button>
         </div>
+
+        {/* Filter Builder */}
+        <FilterBuilder
+          filters={filters}
+          logic={filterLogic}
+          onFiltersChange={setFilters}
+          onLogicChange={setFilterLogic}
+        />
 
         {/* Attack Items */}
         <ItemTypeSection
@@ -93,6 +115,11 @@ interface ItemTypeSectionProps {
 }
 
 function ItemTypeSection({ type, items }: ItemTypeSectionProps) {
+  // Hide section if no items
+  if (items.length === 0) {
+    return null;
+  }
+
   // Group by rarity for display
   const itemsByRarity = useMemo(() => {
     const byRarity: Record<ItemRarity, Item[]> = {
